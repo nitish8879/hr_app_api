@@ -1,0 +1,43 @@
+<mxfile host="65bd71144e">
+    <diagram id="W2GFtFGKwUCVliJ7YopT" name="Page-1">
+        <mxGraphModel dx="1434" dy="541" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;spacing=3;" parent="1" vertex="1">
+                    <mxGeometry x="-70" y="100" width="134" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="325" value="user_tbl" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="-430" y="320" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="326" value="id,&lt;br&gt;username,&lt;br&gt;password,&lt;br&gt;companyID,&lt;br&gt;createdAt,&lt;br&gt;roleType,&lt;br&gt;Total sick leave pending,&lt;br&gt;Total paid leave pending,&lt;br&gt;Total sick leave taken,&lt;br&gt;Total paid leave taken," style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="325" vertex="1">
+                    <mxGeometry x="5" y="30" width="185" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="327" value="compnay_tbl" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="-180" y="320" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="328" value="id,&lt;br&gt;name,&lt;br&gt;ownerID (USERID),&lt;br&gt;workingdays&lt;br&gt;in time,&lt;br&gt;out time," style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="327" vertex="1">
+                    <mxGeometry x="10" y="33" width="180" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="329" value="user_activity_tbl" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="64" y="320" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="330" value="ID,&lt;br&gt;userID,&lt;br&gt;in Time,&lt;br&gt;out Time,&lt;br&gt;break Time,&lt;br&gt;date," style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="70" y="350" width="190" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="336" value="Role Type" style="swimlane;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="-90" y="610" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="337" value="ADMIN,&lt;br&gt;EMPLOYEE&lt;br&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="336" vertex="1">
+                    <mxGeometry y="30" width="190" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="338" value="leave_activity_tbl" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="325" y="320" width="200" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="339" value="ID,&lt;br&gt;userID,&lt;br&gt;leave apply date,&lt;br&gt;leave status,&lt;br&gt;leave approved by,&lt;br&gt;leave reason,&lt;br&gt;leave from to date,&lt;br&gt;leave rejected remark," style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="338">
+                    <mxGeometry y="30" width="190" height="160" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
