@@ -10,5 +10,5 @@ public interface LeaveActivitiesService {
 
     public AppResponse approveOrRejectLeave(LeaveActivityApproveRejectReq req);
 
-    public AppResponse getAllLeavesByCompanyID(Integer companyID);
+    public AppResponse getAllLeavesByCompanyID(Integer userID, Integer companyID);
 }

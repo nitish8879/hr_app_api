@@ -66,7 +66,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     @Override
     public AppResponse approveOrRejectLeave(LeaveActivityApproveRejectReq req) {
         AppResponse response = new AppResponse();
-        var userExit = userRepo.findById(req.getUserID());
+        var userExit = userRepo.findById(req.getEmployeeID());
         if (userExit != null && userExit.isPresent()) {
             var companyExit = companyRepo.findById(req.getCompanyID());
             if (companyExit != null && companyExit.isPresent()) {
@@ -74,9 +74,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
                         && (req.getRejectReason() == null || req.getRejectReason().isEmpty())) {
                     response.setStatus(false);
                     response.setErrorMsg("Please enter reject reason");
-                    userExit.get().setTotalLeavePending(userExit.get().getTotalLeaveCancelled() + 1);
                 } else {
-                    userExit.get().setTotalLeavePending(userExit.get().getTotalLeaveApproved() + 1);
                     var leaveData = repo.findById(req.getLeaveID());
 
                     if (leaveData == null || !leaveData.isPresent()) {
@@ -88,15 +86,21 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
                     } else {
                         leaveData.get().setLeaveStatus(LeaveStatus.valueOf(req.getLeaveStatus()));
                         leaveData.get().setRejectedReason(req.getRejectReason());
+                        if (leaveData.get().getLeaveStatus() == LeaveStatus.APPROVED) {
+                            userExit.get().setTotalLeaveApproved(userExit.get().getTotalLeaveApproved() + 1);
+                        } else {
+                            userExit.get().setTotalLeaveCancelled(userExit.get().getTotalLeaveCancelled() + 1);
+                        }
+                        if (userExit.get().getTotalLeavePending() > 0) {
+                            userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() - 1);
+                        }
                         var saveData = repo.save(leaveData.get());
+                        userRepo.save(userExit.get());
                         response.setStatus(true);
                         response.setData(saveData);
                     }
                 }
-                if (userExit.get().getTotalLeavePending() > 0) {
-                    userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() - 1);
-                }
-                userRepo.save(userExit.get());
+
             } else {
                 response.setErrorMsg("Company not found");
             }
@@ -108,10 +112,10 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     }
 
     @Override
-    public AppResponse getAllLeavesByCompanyID(Integer companyID) {
+    public AppResponse getAllLeavesByCompanyID(Integer userID, Integer companyID) {
         AppResponse response = new AppResponse();
         try {
-            var data = repo.findByCompanyID(companyID);
+            var data = repo.findByUserIDAndCompanyID(userID,companyID);
             response.setData(data);
             response.setStatus(true);
         } catch (Exception e) {

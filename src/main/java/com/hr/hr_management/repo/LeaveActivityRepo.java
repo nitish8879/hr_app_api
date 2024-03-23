@@ -11,4 +11,6 @@ public interface LeaveActivityRepo extends JpaRepository<LeaveAcitivityEntities,
     List<LeaveAcitivityEntities> findByCompanyID(Integer id);
 
     List<LeaveAcitivityEntities> findByUserID(int userID);
+
+    List<LeaveAcitivityEntities> findByUserIDAndCompanyID(int userID,int companyID);
 }
