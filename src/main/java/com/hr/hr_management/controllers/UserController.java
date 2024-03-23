@@ -15,6 +15,7 @@ import com.hr.hr_management.services.UserService;
 import com.hr.hr_management.utils.models.AppResponse;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -40,6 +41,11 @@ public class UserController {
     @GetMapping("/allEmployees/{userID}")
     public AppResponse findAllEmployesByCompanyID(@PathVariable("userID") Integer userID) {
         return userService.findAllEmployesByCompanyID(userID);
+    }
+
+    @GetMapping("/getTotalLeave")
+    public AppResponse getMethodName(@RequestParam("userID") Integer userID, @RequestParam("companyID") Integer companyID) {
+        return userService.getUserTotalLeave(userID, companyID);
     }
 
 }

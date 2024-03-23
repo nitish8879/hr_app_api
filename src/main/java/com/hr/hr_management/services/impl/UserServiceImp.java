@@ -1,5 +1,6 @@
 package com.hr.hr_management.services.impl;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class UserServiceImp implements UserService {
     private UserRepo userRepo;
     @Autowired
     private CompanyRepo companyRepo;
+    // @Autowired
+    // private LeaveActivityRepo leaveActivityRepo;
 
     @Override
     public AppResponse signin(UserSigninReq req) {
@@ -39,10 +42,12 @@ public class UserServiceImp implements UserService {
                 userResp.setFullName(userData.get().getFullName());
                 userResp.setCreatedAt(userData.get().getCreatedAt());
                 userResp.setRoleType(userData.get().getRoleType().name());
-                userResp.setTotalSickLeavePending(userData.get().getTotalSickLeavePending());
-                userResp.setTotalPaidLeavePending(userData.get().getTotalPaidLeavePending());
-                userResp.setTotalSickLeaveTaken(userData.get().getTotalSickLeaveTaken());
-                userResp.setTotalPaidLeaveTaken(userData.get().getTotalPaidLeaveTaken());
+
+                userResp.setTotalLeaveBalance(userData.get().getTotalLeaveBalance());
+                userResp.setTotalLeaveApproved(userData.get().getTotalLeaveApproved());
+                userResp.setTotalLeavePending(userData.get().getTotalLeavePending());
+                userResp.setTotalLeaveCancelled(userData.get().getTotalLeaveCancelled());
+
                 userResp.setCompanyName(companyData.get().getCompanyName());
                 userResp.setWrokingDays(companyData.get().getWorkingDays());
                 userResp.setInTime(companyData.get().getInTime());
@@ -180,6 +185,55 @@ public class UserServiceImp implements UserService {
             response.setData(data);
         } else {
             response.setErrorMsg("data not found");
+        }
+        return response;
+    }
+
+    // private void setUserLeave(Integer userID, Integer companyID) throws Exception
+    // {
+    // var userExit = userRepo.findById(userID);
+    // if (userExit != null && userExit.isPresent()) {
+    // var companyExit = companyRepo.findById(companyID);
+    // if (companyExit != null && companyExit.isPresent()) {
+    // var totalLeave = new HashMap<>();
+    // List<LeaveAcitivityEntities> userLeaveActivityList =
+    // leaveActivityRepo.findByUserID(userID);
+    // for (LeaveAcitivityEntities leaveAcitivityEntities : userLeaveActivityList) {
+    // if (leaveAcitivityEntities.getLeaveStatus() == LeaveStatus.APPROVED) {
+    // }
+    // }
+    // totalLeave.put("totalLeaveBalance", userExit.get().getTotalLeaveBalance());
+    // totalLeave.put("totalLeaveApproved", userExit.get().getTotalLeaveApproved());
+    // totalLeave.put("totalLeavePending", userExit.get().getTotalLeavePending());
+    // totalLeave.put("totalLeaveCancelled",
+    // userExit.get().getTotalLeaveCancelled());
+    // } else {
+    // throw new Exception("Company not found");
+    // }
+    // } else {
+    // throw new Exception("User not found");
+    // }
+    // }
+
+    @Override
+    public AppResponse getUserTotalLeave(Integer userID, Integer companyID) {
+        AppResponse response = new AppResponse();
+        var userExit = userRepo.findById(userID);
+        if (userExit != null && userExit.isPresent()) {
+            var companyExit = companyRepo.findById(companyID);
+            if (companyExit != null && companyExit.isPresent()) {
+                var totalLeave = new HashMap<>();
+                totalLeave.put("totalLeaveBalance", userExit.get().getTotalLeaveBalance());
+                totalLeave.put("totalLeaveApproved", userExit.get().getTotalLeaveApproved());
+                totalLeave.put("totalLeavePending", userExit.get().getTotalLeavePending());
+                totalLeave.put("totalLeaveCancelled", userExit.get().getTotalLeaveCancelled());
+                response.setStatus(true);
+                response.setData(totalLeave);
+            } else {
+                response.setErrorMsg("Company not found");
+            }
+        } else {
+            response.setErrorMsg("User not found");
         }
         return response;
     }

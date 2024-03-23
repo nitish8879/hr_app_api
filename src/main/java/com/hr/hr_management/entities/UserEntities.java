@@ -44,16 +44,16 @@ public class UserEntities {
     private boolean employeApproved = false;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalSickLeavePending;
+    private int totalLeaveBalance;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalPaidLeavePending;
+    private int totalLeaveApproved;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalSickLeaveTaken;
+    private int totalLeavePending;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalPaidLeaveTaken;
+    private int totalLeaveCancelled;
 
     @Column(nullable = true)
     private String accountSuspendReason;

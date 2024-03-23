@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
@@ -23,13 +24,13 @@ public class UserSigninOrSingupRes {
 
     private String roleType;
 
-    private int totalSickLeavePending;
+    private int totalLeaveBalance;
 
-    private int totalPaidLeavePending;
+    private int totalLeaveApproved;
 
-    private int totalSickLeaveTaken;
+    private int totalLeavePending;
 
-    private int totalPaidLeaveTaken;
+    private int totalLeaveCancelled;
 
     private String companyName;
 

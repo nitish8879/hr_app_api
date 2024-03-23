@@ -13,4 +13,6 @@ public interface UserService {
     public AppResponse approveOrRejectEmployee(ApproveOrRejectEmployeReq req);
 
     public AppResponse findAllEmployesByCompanyID(Integer userID);
+
+    public AppResponse getUserTotalLeave(Integer userID,Integer companyID);
 }
