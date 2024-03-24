@@ -1,0 +1,395 @@
+{
+	"info": {
+		"_postman_id": "e55a2c32-8fd8-409c-8b2f-1fa1f7a7bfec",
+		"name": "HR App API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31956184"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"nitishqq\",\n    \"password\":\"nitish12\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:1010/auth/signin",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signup Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"nitish\",\n    \"password\": \"1234567890\",\n    \"fullName\": \"Nitish Gupta\",\n    // ADMIN\n    \"roleType\": \"ADMIN\",\n    \"companyName\": \"Test ABCD\",\n    \"inTime\": \"09:00:00\",\n    \"outTime\": \"10:00:00\",\n    \"wrokingDays\": [\n        1,\n        2,\n        3\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:1010/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "1010",
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signup Employee",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"nitish user2\",\n    \"password\": \"1234567890\",\n    \"fullName\": \"Nitish Gupta\",\n    // EMPLOYEE\n    \"roleType\": \"EMPLOYEE\",\n    \"companyID\": 1\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:1010/auth/signup",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getEmplyee By CompanyID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/auth/allEmployees/1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"auth",
+						"allEmployees",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approveOrRejectEmployee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": 1,\n    \"companyID\": 1,\n    \"approvalID\":52,\n    //APPROVE|REJECT\n    \"status\":\"APPROVE\",\n    \"rejectReason\":\"testing\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:1010/auth/approveOrRejectEmployee",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"auth",
+						"approveOrRejectEmployee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "In,OUT,BREAK IN,BREAK OUT",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    // \"activityID\": 103,\n    \"userID\": 202,\n    \"companyID\": 1,\n    //IN|BREAKIN|BREAKOUT|OUT\n    \"activityType\": \"BREAKIN\",\n    // \"inTime\": \"05:22:23\",\n    // \"outTime\": \"09:22:23\",\n    // \"breakInTime\": \"19:53:57\",\n    \"breakOutTime\": \"00:30:00\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:1010/activity/dailyInOut",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"activity",
+						"dailyInOut"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all Leave by Compnay id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/leave/getAllLeaves?userID=52&companyID=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"leave",
+						"getAllLeaves"
+					],
+					"query": [
+						{
+							"key": "userID",
+							"value": "52"
+						},
+						{
+							"key": "companyID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "addLeave",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userID\": 3,\n    \"companyID\": 1,\n    \"approvalTo\": 1,\n    \"leaveStatus\": \"PENDING\",\n    \"fromdate\": \"12-12-2022\",\n    \"todate\": \"14-12-2022\",\n    \"leaveReason\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:1010/leave/addLeave",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"leave",
+						"addLeave"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approveRejectLeave",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"leaveID\": 54,\n    \"userID\":1,\n    \"companyID\":1,\n    \"employeeID\":3,\n    // REJECTED|APPROVED|PENDING\n    \"leaveStatus\":\"REJECTED\",\n    \"rejectReason\":\"test reject\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:1010/leave/approveReject",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"leave",
+						"approveReject"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getDataByIDAndCompanyIdAndDate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/activity/getDataByIDAndCompanyIdAndDate?id=202&compnayID=1&date=2024-03-17",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"activity",
+						"getDataByIDAndCompanyIdAndDate"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "202"
+						},
+						{
+							"key": "compnayID",
+							"value": "1"
+						},
+						{
+							"key": "date",
+							"value": "2024-03-17"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getActivityList",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/activity/getActivityList?id=2&compnayID=1&date=2024-03-12",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"activity",
+						"getActivityList"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "2"
+						},
+						{
+							"key": "compnayID",
+							"value": "1"
+						},
+						{
+							"key": "date",
+							"value": "2024-03-12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getTotalLeave",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/auth/getTotalLeave?userID=52&companyID=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"auth",
+						"getTotalLeave"
+					],
+					"query": [
+						{
+							"key": "userID",
+							"value": "52"
+						},
+						{
+							"key": "companyID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
