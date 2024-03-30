@@ -1,6 +1,8 @@
 package com.hr.hr_management.services.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,7 +184,18 @@ public class UserServiceImp implements UserService {
         var data = userRepo.findByCompanyID(userID);
         if (data != null && !data.isEmpty()) {
             response.setStatus(true);
-            response.setData(data);
+            var allUser = new ArrayList<>();
+            for (UserEntities userEntities : data) {
+                var map = new HashMap<>();
+                map.put("username", userEntities.getUserName());
+                map.put("name", userEntities.getFullName());
+                map.put("createdAt", userEntities.getCreatedAt());
+                map.put("role", userEntities.getRoleType().name());
+                map.put("status", userEntities.isEmployeApproved());
+                map.put("id", userEntities.getId());
+                allUser.add(map);
+            }
+            response.setData(allUser);
         } else {
             response.setErrorMsg("data not found");
         }

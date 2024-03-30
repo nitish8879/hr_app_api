@@ -7,12 +7,17 @@ import java.util.List;
 
 import com.hr.hr_management.utils.enums.WrokingDays;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import lombok.Data;
 
 @Data
@@ -20,7 +25,7 @@ import lombok.Data;
 public class CompanyEntities {
 
     @Id
-    @GeneratedValue
+     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;// companyID
 
     @Column(nullable = false)
@@ -41,6 +46,10 @@ public class CompanyEntities {
     @ElementCollection
     @Column(nullable = true)
     private Collection<Integer> allEmployesID = new ArrayList<Integer>();
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name = "company_holidays", joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "holiday_id"))
+    private List<HolidayEntity> holidays;
 
     public CompanyEntities() {
     }
