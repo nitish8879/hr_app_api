@@ -79,7 +79,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"nitish user2\",\n    \"password\": \"1234567890\",\n    \"fullName\": \"Nitish Gupta\",\n    // EMPLOYEE\n    \"roleType\": \"EMPLOYEE\",\n    \"companyID\": 1\n}"
+					"raw": "{\n    \"username\": \"nitishCUser\",\n    \"password\": \"nitish12\",\n    \"fullName\": \"Nitish Gupta\",\n    // EMPLOYEE\n    \"roleType\": \"EMPLOYEE\",\n    \"companyID\": 1\n}"
 				},
 				"url": {
 					"raw": "http://127.0.0.1:1010/auth/signup",
@@ -384,6 +384,72 @@
 						},
 						{
 							"key": "companyID",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create Holiday",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/company/create?companyId=1&label=Diwali&date=2024/12/20",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"company",
+						"create"
+					],
+					"query": [
+						{
+							"key": "companyId",
+							"value": "1"
+						},
+						{
+							"key": "label",
+							"value": "Diwali"
+						},
+						{
+							"key": "date",
+							"value": "2024/12/20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all holiday by companyid",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:1010/company/getHoliday?companyId=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "1010",
+					"path": [
+						"company",
+						"getHoliday"
+					],
+					"query": [
+						{
+							"key": "companyId",
 							"value": "1"
 						}
 					]
