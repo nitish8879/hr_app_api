@@ -1,6 +1,7 @@
 package com.hr.hr_management.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -82,24 +83,28 @@ public class UserServiceImp implements UserService {
             if (req.getInTime() == null || (req.getInTime().toString().isBlank())) {
                 response.setErrorMsg("Please set in Time");
             } else if (req.getOutTime() == null || (req.getOutTime().toString().isBlank())) {
-                response.setErrorMsg("Please set in Time");
+                response.setErrorMsg("Please set Out Time");
             } else if (req.getWrokingDays() == null || req.getWrokingDays().isEmpty()) {
                 response.setErrorMsg("Please set working days");
             } else {
                 try {
-                    var savedUserEntities = userRepo.save(new UserEntities(
+                    var newuser = new UserEntities(
                             req.getUsername(),
                             req.getPassword(),
                             req.getFullName(),
-                            UserRoleType.valueOf(req.getRoleType())));
-                    var savedCompanyUserEntities = companyRepo.save(new CompanyEntities(
+                            UserRoleType.valueOf(req.getRoleType()));
+                    var savedUserEntities = userRepo.save(newuser);
+                    var newCompany = new CompanyEntities(
                             req.getCompanyName(),
                             savedUserEntities.getId(),
                             req.getInTime(),
                             req.getOutTime(),
-                            req.getWrokingDays()));
-                    savedUserEntities.setEmployeApproved(true);
+                            req.getWrokingDays());
+                    Collection<Integer> allEmployess = new ArrayList<>();
+                    allEmployess.add(savedUserEntities.getId());
+                    var savedCompanyUserEntities = companyRepo.save(newCompany);
                     savedUserEntities.setCompanyID(savedCompanyUserEntities.getId());
+                    savedUserEntities.setEmployeApproved(true);
                     userRepo.save(savedUserEntities);
                     return signin(new UserSigninReq(req.getUsername(), req.getPassword()));
                 } catch (Exception e) {
