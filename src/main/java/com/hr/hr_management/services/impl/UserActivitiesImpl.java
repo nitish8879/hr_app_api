@@ -149,17 +149,13 @@ public class UserActivitiesImpl implements UserActivitiesService {
                             }
                             if (!foundData.get().getBreakInTimes().isEmpty()) {
                                 HashMap<String, Object> breakInTime = new HashMap<>();
-                                for (int i = 0; i < foundData.get().getBreakInTimes().size(); i++) {
-                                    breakInTime.put("breakInTime " + (i + 1), foundData.get().getBreakInTimes().get(i));
-                                }
+                                breakInTime.put("breakInTime", foundData.get().getBreakInTimes());
                                 data.put("breakInTime", breakInTime);
                             }
 
                             if (!foundData.get().getBreakOutTimes().isEmpty()) {
                                 HashMap<String, Object> breakOutTime = new HashMap<>();
-                                for (int i = 0; i < foundData.get().getBreakOutTimes().size(); i++) {
-                                    breakOutTime.put("breakOutTime " + (i + 1), foundData.get().getBreakOutTimes().get(i));
-                                }
+                                breakOutTime.put("breakOutTime", foundData.get().getBreakOutTimes());
                                 data.put("breakOutTime", breakOutTime);
                             }
 
