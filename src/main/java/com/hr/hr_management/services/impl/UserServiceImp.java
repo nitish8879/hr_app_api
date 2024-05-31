@@ -102,6 +102,7 @@ public class UserServiceImp implements UserService {
                             req.getWrokingDays());
                     Collection<Integer> allEmployess = new ArrayList<>();
                     allEmployess.add(savedUserEntities.getId());
+                    newCompany.setAllEmployesID(allEmployess);
                     var savedCompanyUserEntities = companyRepo.save(newCompany);
                     savedUserEntities.setCompanyID(savedCompanyUserEntities.getId());
                     savedUserEntities.setEmployeApproved(true);
