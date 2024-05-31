@@ -2,8 +2,8 @@ package com.hr.hr_management.dao.req;
 
 import java.sql.Time;
 
-import jakarta.annotation.*;
-import jakarta.validation.constraints.*;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data

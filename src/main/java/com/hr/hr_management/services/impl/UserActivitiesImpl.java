@@ -4,7 +4,9 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 
+import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +35,13 @@ public class UserActivitiesImpl implements UserActivitiesService {
     public AppResponse dailyInOut(UserActivityReq req) {
         AppResponse response = new AppResponse();
         var userExit = userRepo.findById(req.getUserID());
+
         if (userExit != null && userExit.isPresent()) {
+
             if (userExit.get().isEmployeApproved()) {
+
                 var compnayExit = companyRepo.findById(req.getCompanyID());
+
                 if (compnayExit != null && compnayExit.isPresent()) {
 
                     if (compnayExit.get().getAllEmployesID().contains(req.getUserID())) {
@@ -55,9 +61,9 @@ public class UserActivitiesImpl implements UserActivitiesService {
                                 } else if (req.getActivityType() == UserActivitiesType.IN.name()) {
                                     recordExit.get().setInTime(req.getInTime());
                                 } else if ((req.getActivityType().equals(UserActivitiesType.BREAKIN.name()))) {
-                                    recordExit.get().setBreakInTime(req.getBreakInTime());
+                                    recordExit.get().getBreakInTimes().add(req.getBreakInTime());
                                 } else if ((req.getActivityType().equals(UserActivitiesType.BREAKOUT.name()))) {
-                                    recordExit.get().setBreakOutTime(req.getBreakOutTime());
+                                    recordExit.get().getBreakOutTimes().add(req.getBreakInTime());
                                 } else {
                                     recordExit.get().setOutTime(req.getOutTime());
                                 }
@@ -93,7 +99,8 @@ public class UserActivitiesImpl implements UserActivitiesService {
                 var compnayExit = companyRepo.findById(compnayID);
                 if (compnayExit != null && compnayExit.isPresent()) {
                     if (compnayExit.get().getAllEmployesID().contains(userID)) {
-                        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(userID, compnayID, date);
+                        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(userID, compnayID,
+                                date);
                         if (foundData != null && foundData.isPresent()) {
                             response.setStatus(true);
                             response.setData(foundData.get());
@@ -129,10 +136,10 @@ public class UserActivitiesImpl implements UserActivitiesService {
                             response.setStatus(true);
                             Map<String, Object> data = new HashMap<>();
                             data.put("activityID", foundData.get().getId());
+                            data.put("date", foundData.get().getCreatedAt());
                             if (foundData.get().getInTime() != null) {
                                 HashMap<String, Object> checkIn = new HashMap<>();
                                 checkIn.put("inTime", foundData.get().getInTime());
-                                checkIn.put("date", foundData.get().getCreatedAt());
                                 if (foundData.get().getInTime().after(compnayExit.get().getInTime())) {
                                     checkIn.put("msg", "Late ");
                                 } else {
@@ -140,26 +147,27 @@ public class UserActivitiesImpl implements UserActivitiesService {
                                 }
                                 data.put("checkIn", checkIn);
                             }
-                            if (foundData.get().getBreakInTime() != null) {
+                            if (!foundData.get().getBreakInTimes().isEmpty()) {
                                 HashMap<String, Object> breakInTime = new HashMap<>();
-                                breakInTime.put("breakInTime", foundData.get().getBreakInTime());
-                                breakInTime.put("date", foundData.get().getCreatedAt());
+                                for (int i = 0; i < foundData.get().getBreakInTimes().size(); i++) {
+                                    breakInTime.put("breakInTime " + (i + 1), foundData.get().getBreakInTimes().get(i));
+                                }
                                 data.put("breakInTime", breakInTime);
                             }
 
-                            if (foundData.get().getBreakOutTime() != null) {
+                            if (!foundData.get().getBreakOutTimes().isEmpty()) {
                                 HashMap<String, Object> breakOutTime = new HashMap<>();
-                                breakOutTime.put("breakOutTime", foundData.get().getBreakOutTime());
-                                breakOutTime.put("date", foundData.get().getCreatedAt());
+                                for (int i = 0; i < foundData.get().getBreakOutTimes().size(); i++) {
+                                    breakOutTime.put("breakOutTime " + (i + 1), foundData.get().getBreakOutTimes().get(i));
+                                }
                                 data.put("breakOutTime", breakOutTime);
                             }
 
                             if (foundData.get().getOutTime() != null) {
                                 HashMap<String, Object> outTime = new HashMap<>();
                                 outTime.put("outTime", foundData.get().getOutTime());
-                                outTime.put("date", foundData.get().getCreatedAt());
                                 if (foundData.get().getOutTime().after(compnayExit.get().getOutTime())) {
-                                    outTime.put("msg", "Over Time " );
+                                    outTime.put("msg", "Over Time ");
                                 } else {
                                     outTime.put("msg", "On Time");
                                 }

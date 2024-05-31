@@ -2,10 +2,15 @@ package com.hr.hr_management.entities;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.hr.hr_management.utils.TimeListConverter;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -25,16 +30,17 @@ public class UserActivityEntities {
     @Column(nullable = false)
     private int companyID;
 
-    @Column(nullable = false)
+    @Convert(converter = TimeListConverter.class)
+    private List<Time> breakInTimes = new ArrayList<>();
+
+    @Convert(converter = TimeListConverter.class)
+    private List<Time> breakOutTimes =  new ArrayList<>();
+
+    @Column(nullable = true)
     private Time inTime;
 
     @Column(nullable = true)
     private Time outTime;
-
-    @Column(nullable = true)
-    private Time breakInTime;
-    @Column(nullable = true)
-    private Time breakOutTime;
 
     @CreationTimestamp
     @Column(updatable = false)
