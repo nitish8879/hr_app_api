@@ -32,11 +32,11 @@ public class UserActivityEntities {
 
     @Convert(converter = TimeListConverter.class)
     @Column(columnDefinition = "TEXT")
-    private List<Time> breakInTimes = new ArrayList<>();
+    private List<Time> breakInTimes;
 
     @Convert(converter = TimeListConverter.class)
     @Column(columnDefinition = "TEXT")
-    private List<Time> breakOutTimes = new ArrayList<>();
+    private List<Time> breakOutTimes;
 
     @Column(nullable = true)
     private Time inTime;

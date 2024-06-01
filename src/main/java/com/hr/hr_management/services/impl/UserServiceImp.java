@@ -79,7 +79,7 @@ public class UserServiceImp implements UserService {
 
         if (userexit.isPresent()) {
             response.setErrorMsg("Username already taken!");
-        } else if (req.getRoleType().equals(UserRoleType.ADMIN.name())) {
+        } else if (req.getRoleType().equals(UserRoleType.SUPERADMIN.name())) {
             if (req.getInTime() == null || (req.getInTime().toString().isBlank())) {
                 response.setErrorMsg("Please set in Time");
             } else if (req.getOutTime() == null || (req.getOutTime().toString().isBlank())) {

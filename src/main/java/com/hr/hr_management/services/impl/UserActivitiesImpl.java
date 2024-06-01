@@ -1,12 +1,10 @@
 package com.hr.hr_management.services.impl;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Arrays;
 
-import org.hibernate.mapping.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,9 +59,15 @@ public class UserActivitiesImpl implements UserActivitiesService {
                                 } else if (req.getActivityType() == UserActivitiesType.IN.name()) {
                                     recordExit.get().setInTime(req.getInTime());
                                 } else if ((req.getActivityType().equals(UserActivitiesType.BREAKIN.name()))) {
+                                    if (recordExit.get().getBreakInTimes() == null) {
+                                        recordExit.get().setBreakInTimes(new ArrayList<>());
+                                    }
                                     recordExit.get().getBreakInTimes().add(req.getBreakInTime());
                                 } else if ((req.getActivityType().equals(UserActivitiesType.BREAKOUT.name()))) {
-                                    recordExit.get().getBreakOutTimes().add(req.getBreakInTime());
+                                    if (recordExit.get().getBreakOutTimes() == null) {
+                                        recordExit.get().setBreakOutTimes(new ArrayList<>());
+                                    }
+                                    recordExit.get().getBreakOutTimes().add(req.getBreakOutTime());
                                 } else {
                                     recordExit.get().setOutTime(req.getOutTime());
                                 }
@@ -147,16 +151,14 @@ public class UserActivitiesImpl implements UserActivitiesService {
                                 }
                                 data.put("checkIn", checkIn);
                             }
-                            if (!foundData.get().getBreakInTimes().isEmpty()) {
-                                HashMap<String, Object> breakInTime = new HashMap<>();
-                                breakInTime.put("breakInTime", foundData.get().getBreakInTimes());
-                                data.put("breakInTime", breakInTime);
+                            if (foundData.get().getBreakInTimes() != null
+                                    && !foundData.get().getBreakInTimes().isEmpty()) {
+                                data.put("breakInTime", foundData.get().getBreakInTimes());
                             }
 
-                            if (!foundData.get().getBreakOutTimes().isEmpty()) {
-                                HashMap<String, Object> breakOutTime = new HashMap<>();
-                                breakOutTime.put("breakOutTime", foundData.get().getBreakOutTimes());
-                                data.put("breakOutTime", breakOutTime);
+                            if (foundData.get().getBreakOutTimes() != null
+                                    && !foundData.get().getBreakOutTimes().isEmpty()) {
+                                data.put("breakOutTime", foundData.get().getBreakOutTimes());
                             }
 
                             if (foundData.get().getOutTime() != null) {
