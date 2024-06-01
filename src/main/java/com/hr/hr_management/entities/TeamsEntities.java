@@ -28,6 +28,7 @@ public class TeamsEntities {
 
     @Id
     @GeneratedValue
+    @Column(name = "team_id")
     private UUID id;
 
     @CreationTimestamp
@@ -37,9 +38,8 @@ public class TeamsEntities {
     private String teamName;
 
     @ManyToMany
-    @JoinTable(name = "team_user", joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    @JoinTable(name = "team_user", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<UserEntities> members = new ArrayList<>();
-
 
     @JsonIgnore
     @ManyToOne

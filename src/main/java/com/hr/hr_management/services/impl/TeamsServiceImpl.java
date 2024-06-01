@@ -27,6 +27,7 @@ public class TeamsServiceImpl implements TeamsService {
     @Autowired
     ValidationUserService validationUserService;
 
+    @Override
     public String createTeam(CreateTeamReq req) {
         validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
         TeamsEntities teamsEntities = new TeamsEntities();
@@ -36,6 +37,7 @@ public class TeamsServiceImpl implements TeamsService {
         return "Team Created";
     }
 
+    @Override
     public String addMember(MemberAddReq req) {
         validationUserService.isUserValid(req.getCreatingUserID(), req.getCompanyID());
         var team = teamRepo.findById(req.getTeamID());
@@ -63,6 +65,7 @@ public class TeamsServiceImpl implements TeamsService {
         return "Member Added";
     }
 
+    @Override
     public Object fetchTeamsAndMembers(Integer companyID,Integer userID) {
         validationUserService.isUserValid(userID, companyID);
         var companyExit = companyRepo.findById(companyID);

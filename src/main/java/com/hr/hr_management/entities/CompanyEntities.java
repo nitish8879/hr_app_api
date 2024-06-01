@@ -27,6 +27,7 @@ public class CompanyEntities {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "company_id")
     private int id;// companyID
 
     @Column(nullable = false)
@@ -49,7 +50,7 @@ public class CompanyEntities {
     private Collection<Integer> allEmployesID = new ArrayList<Integer>();
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "company_holidays", joinColumns = @JoinColumn(name = "id"), inverseJoinColumns = @JoinColumn(name = "holiday_id"))
+    @JoinTable(name = "company_holidays", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "holiday_id"))
     private List<HolidayEntity> holidays;
 
     public CompanyEntities() {

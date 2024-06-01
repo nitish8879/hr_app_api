@@ -4,7 +4,6 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 import com.hr.hr_management.utils.enums.LeaveStatus;
 
