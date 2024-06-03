@@ -24,9 +24,10 @@ import lombok.Data;
 @Entity
 public class UserActivityEntities {
 
-    public UserActivityEntities(UserEntities user, Time inTime) {
+    public UserActivityEntities(UserEntities user, Time inTime, CompanyEntities company) {
         this.user = user;
         this.inTime = inTime;
+        this.company = company;
     }
 
     public UserActivityEntities() {

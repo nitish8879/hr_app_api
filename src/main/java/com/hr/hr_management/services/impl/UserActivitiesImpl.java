@@ -37,13 +37,14 @@ public class UserActivitiesImpl implements UserActivitiesService {
         if (req.getActivityID() == null) {
             var saveUserEntities = userActivitiesRepo.save(new UserActivityEntities(
                     userExit.get(),
-                    req.getInTime()));
+                    req.getInTime(),
+                    userExit.get().getCompany()));
             response.setStatus(true);
             response.setData(saveUserEntities);
         } else {
             var recordExit = userActivitiesRepo.findById(req.getActivityID());
-            if (recordExit != null && recordExit.isPresent()) {
-                if (recordExit.get().getUser().getId() != req.getUserID()) {
+            if (recordExit.isPresent()) {
+                if (recordExit.get().getUser().getId() != userExit.get().getId()) {
                     response.setStatus(false);
                     response.setErrorMsg("You are not the right person to update this data");
                 } else if (req.getActivityType() == UserActivitiesType.IN.name()) {
