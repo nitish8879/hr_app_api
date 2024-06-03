@@ -15,6 +15,6 @@ public interface UserRepo extends JpaRepository<UserEntities, UUID> {
 
     Optional<UserEntities> findByUserName(String userName);
 
-    List<UserEntities> findByCompanyID(int companyID);
+    List<UserEntities> findByCompanyID(UUID companyID);
 
 }

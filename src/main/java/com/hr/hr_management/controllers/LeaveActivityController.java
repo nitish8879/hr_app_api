@@ -1,5 +1,6 @@
 package com.hr.hr_management.controllers;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,8 @@ public class LeaveActivityController {
     private LeaveActivitiesService service;
 
     @GetMapping("/getAllLeaves")
-    public AppResponse getAllLeaves(@RequestParam("userID") Integer userID,
-            @RequestParam("companyID") Integer companyID) {
+    public AppResponse getAllLeaves(@RequestParam("userID") UUID userID,
+            @RequestParam("companyID") UUID companyID) {
         return service.getAllLeavesByCompanyID(userID, companyID);
     }
 

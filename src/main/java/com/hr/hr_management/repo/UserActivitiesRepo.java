@@ -10,7 +10,7 @@ import com.hr.hr_management.entities.UserActivityEntities;
 
 public interface UserActivitiesRepo extends JpaRepository<UserActivityEntities, UUID> {
 
-    Optional<UserActivityEntities> findByIdAndCreatedAt(Integer id, LocalDate localDate);
+    Optional<UserActivityEntities> findByIdAndCreatedAt(UUID id, LocalDate localDate);
 
     Optional<UserActivityEntities> findByUserIDAndCompanyIDAndCreatedAt(UUID userID, UUID companyID,
             LocalDate createdAt);

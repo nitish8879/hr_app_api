@@ -9,9 +9,9 @@ import com.hr.hr_management.entities.LeaveAcitivityEntities;
 
 public interface LeaveActivityRepo extends JpaRepository<LeaveAcitivityEntities, UUID> {
 
-    List<LeaveAcitivityEntities> findByCompanyID(Integer id);
+    List<LeaveAcitivityEntities> findByCompanyID(UUID id);
 
-    List<LeaveAcitivityEntities> findByUserID(int userID);
+    List<LeaveAcitivityEntities> findByUserID(UUID userID);
 
-    List<LeaveAcitivityEntities> findByUserIDAndCompanyID(int userID,int companyID);
+    List<LeaveAcitivityEntities> findByUserIDAndCompanyID(UUID userID, UUID companyID);
 }

@@ -23,7 +23,7 @@ public class HolidayEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "holiday_id")
     private UUID id;
 

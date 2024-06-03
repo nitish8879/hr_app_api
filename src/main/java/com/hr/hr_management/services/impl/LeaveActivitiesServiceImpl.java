@@ -1,5 +1,6 @@
 package com.hr.hr_management.services.impl;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +34,9 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         AppResponse response = new AppResponse();
         var user = userRepo.findById(req.getUserID());
         var approvalTo = userRepo.findById(req.getApprovalTo());
-        LeaveAcitivityEntities data = new LeaveAcitivityEntities(user.get(), approvalTo.get());
+        LeaveAcitivityEntities data = new LeaveAcitivityEntities(user.get(), approvalTo.get().getId());
         data.setUser(user.get());
-        data.setApprovalTo(approvalTo.get());
+        data.setApprovalTo(approvalTo.get().getId());
         data.setCompany(user.get().getCompany());
         data.setLeaveStatus(LeaveStatus.PENDING);
         data.setLeaveReason(req.getLeaveReason());
@@ -76,7 +77,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         if (leaveData == null || !leaveData.isPresent()) {
             response.setStatus(false);
             response.setErrorMsg("Leave Data not found by your ID");
-        } else if (leaveData.get().getApprovalTo().getId() != req.getUserID()) {
+        } else if (leaveData.get().getApprovalTo() != req.getUserID()) {
             response.setStatus(false);
             response.setErrorMsg("You are not the right person to approve this.");
         } else {
@@ -100,7 +101,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     }
 
     @Override
-    public AppResponse getAllLeavesByCompanyID(Integer userID, Integer companyID) {
+    public AppResponse getAllLeavesByCompanyID(UUID userID, UUID companyID) {
         AppResponse response = new AppResponse();
         try {
             var data = leaveRepo.findByUserIDAndCompanyID(userID, companyID);

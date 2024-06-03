@@ -14,21 +14,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
 @Entity
 public class LeaveAcitivityEntities {
-    public LeaveAcitivityEntities(UserEntities user,UserEntities approvalTo){
+    public LeaveAcitivityEntities(UserEntities user, UUID approvalTo) {
         this.user = user;
         this.approvalTo = approvalTo;
     }
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @CreationTimestamp
@@ -56,13 +57,13 @@ public class LeaveAcitivityEntities {
     private UserEntities user;
 
     @JsonIgnore
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private CompanyEntities company;
 
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntities approvalTo;
+    // @ManyToOne
+    // @JsonIgnore
+    // @JoinColumn(name = "user_id", nullable = false)
+    private UUID approvalTo;
 
 }

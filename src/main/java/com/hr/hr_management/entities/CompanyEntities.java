@@ -38,7 +38,7 @@ public class CompanyEntities {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "company_id")
     private UUID id;
 
@@ -60,19 +60,19 @@ public class CompanyEntities {
     private UserEntities admin;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company")
     private List<UserEntities> users = new ArrayList<>();
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "company")
     private List<HolidayEntity> holidays = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    private List<TeamsEntities> allLeaves = new ArrayList<>();
+    @OneToMany(mappedBy = "company")
+    private List<LeaveAcitivityEntities> allLeaves = new ArrayList<>();
     
     @JsonIgnore
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company")
     private List<TeamsEntities> teams = new ArrayList<>();
 
 }

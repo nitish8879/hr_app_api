@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/allEmployees/{userID}")
-    public AppResponse findAllEmployesByCompanyID(@PathVariable("userID") Integer userID) {
+    public AppResponse findAllEmployesByCompanyID(@PathVariable("userID") UUID userID) {
         return userService.findAllEmployesByCompanyID(userID);
     }
 

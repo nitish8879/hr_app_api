@@ -13,6 +13,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
@@ -27,9 +28,9 @@ public class TeamsEntities {
     }
 
     @Id
-    @GeneratedValue
-    @Column(name = "team_id")
     @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "team_id")
     private UUID id;
 
     @CreationTimestamp
@@ -48,6 +49,6 @@ public class TeamsEntities {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntities manager;
 
-    @ManyToMany(mappedBy = "teams", fetch = FetchType.LAZY)
-    private List<UserEntities> users = new ArrayList<>();
+    // @ManyToMany(mappedBy = "teams")
+    // private List<UserEntities> users = new ArrayList<>();
 }

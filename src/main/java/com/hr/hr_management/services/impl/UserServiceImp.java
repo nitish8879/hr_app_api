@@ -147,7 +147,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public AppResponse findAllEmployesByCompanyID(Integer userID) {
+    public AppResponse findAllEmployesByCompanyID(UUID userID) {
         AppResponse response = new AppResponse();
         var data = userRepo.findByCompanyID(userID);
         if (data != null && !data.isEmpty()) {

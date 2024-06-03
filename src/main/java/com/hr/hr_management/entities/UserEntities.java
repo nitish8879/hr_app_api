@@ -17,6 +17,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -40,7 +41,7 @@ public class UserEntities {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private UUID id;
 
@@ -89,16 +90,15 @@ public class UserEntities {
     @JoinColumn(name = "company_id")
     private CompanyEntities company;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
-    private List<TeamsEntities> teams = new ArrayList<>();;
+    // @JsonIgnore
+    // @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+    // private List<TeamsEntities> teams = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<UserActivityEntities> activities = new ArrayList<>();;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserActivityEntities> activities = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<LeaveAcitivityEntities> leaves = new ArrayList<>();
 }
