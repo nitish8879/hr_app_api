@@ -40,16 +40,16 @@ public class UserController {
     }
 
     @GetMapping("/allEmployees/{userID}")
-    public AppResponse findAllEmployesByCompanyID(@PathVariable("userID") UUID userID) {
-        return userService.findAllEmployesByCompanyID(userID);
+    public AppResponse findAllEmployesByCompanyID(@PathVariable("companyID") UUID companyID) {
+        return userService.findAllEmployesByCompanyID(companyID);
     }
 
     @GetMapping("/getTotalLeave")
-    public AppResponse getMethodName(@RequestParam("userID") UUID userID, @RequestParam("companyID") UUID companyID) {
+    public AppResponse getTotalLeave(@PathVariable("userID") UUID userID, @PathVariable("companyID") UUID companyID) {
         return userService.getUserTotalLeave(userID, companyID);
     }
 
-    @GetMapping("/getTotalLeave")
+    @GetMapping("/updatePassword")
     public AppResponse updatePassword(@RequestParam("username") String username,
             @RequestParam("passWord") String passWord, @RequestParam("newpassword") String newPassword) {
         return userService.updatePassword(username, passWord, newPassword);

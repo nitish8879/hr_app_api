@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hr.hr_management.utils.TimeListConverter;
 
 import jakarta.persistence.Column;
@@ -58,4 +59,8 @@ public class UserActivityEntities {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntities user;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private CompanyEntities company;
 }

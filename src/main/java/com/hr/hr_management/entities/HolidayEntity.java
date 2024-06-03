@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 public class HolidayEntity {
 
-    public HolidayEntity(CompanyEntities company){
+    public HolidayEntity(CompanyEntities company) {
         this.company = company;
     }
 

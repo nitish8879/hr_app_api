@@ -103,8 +103,10 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     @Override
     public AppResponse getAllLeavesByCompanyID(UUID userID, UUID companyID) {
         AppResponse response = new AppResponse();
+        validationUserService.isUserValid(userID, userID);
+        var userExit = userRepo.findById(userID);
         try {
-            var data = leaveRepo.findByUserIDAndCompanyID(userID, companyID);
+            var data = userExit.get().getCompany().getAllLeaves();
             response.setData(data);
             response.setStatus(true);
         } catch (Exception e) {

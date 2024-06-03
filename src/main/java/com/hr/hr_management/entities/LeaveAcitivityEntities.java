@@ -1,7 +1,7 @@
 package com.hr.hr_management.entities;
 
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,6 +23,9 @@ import lombok.Data;
 @Data
 @Entity
 public class LeaveAcitivityEntities {
+    public LeaveAcitivityEntities() {
+    }
+
     public LeaveAcitivityEntities(UserEntities user, UUID approvalTo) {
         this.user = user;
         this.approvalTo = approvalTo;
@@ -30,6 +33,7 @@ public class LeaveAcitivityEntities {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "leave_id")
     private UUID id;
 
     @CreationTimestamp
@@ -53,17 +57,14 @@ public class LeaveAcitivityEntities {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private CompanyEntities company;
+
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntities user;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "company_id", nullable = false)
-    private CompanyEntities company;
-
-    // @ManyToOne
-    // @JsonIgnore
-    // @JoinColumn(name = "user_id", nullable = false)
     private UUID approvalTo;
-
 }

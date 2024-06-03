@@ -14,7 +14,7 @@ public interface UserService {
 
     public AppResponse approveOrRejectEmployee(ApproveOrRejectEmployeReq req);
 
-    public AppResponse findAllEmployesByCompanyID(UUID userID);
+    public AppResponse findAllEmployesByCompanyID(UUID companyID);
 
     public AppResponse getUserTotalLeave(UUID userID, UUID companyID);
 

@@ -1,6 +1,6 @@
 package com.hr.hr_management.dao.resp;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
 import java.util.List;
 import java.util.UUID;

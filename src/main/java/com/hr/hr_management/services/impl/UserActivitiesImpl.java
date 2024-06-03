@@ -76,7 +76,8 @@ public class UserActivitiesImpl implements UserActivitiesService {
     public AppResponse getdailyInOutByIDAndDate(UUID userID, UUID compnayID, LocalDate date) {
         validationUserService.isUserValid(userID, compnayID);
         AppResponse response = new AppResponse();
-        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(userID, compnayID,
+        var userExit = userRepo.findById(userID);
+        var foundData = userActivitiesRepo.findByUserAndCompanyAndCreatedAt(userExit.get(), userExit.get().getCompany(),
                 date);
         if (foundData != null && foundData.isPresent()) {
             response.setStatus(true);
@@ -92,7 +93,8 @@ public class UserActivitiesImpl implements UserActivitiesService {
         validationUserService.isUserValid(id, compnayID);
         AppResponse response = new AppResponse();
         var userExit = userRepo.findById(id);
-        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(id, compnayID, date);
+        var foundData = userActivitiesRepo.findByUserAndCompanyAndCreatedAt(userExit.get(), userExit.get().getCompany(),
+                date);
         if (foundData != null && foundData.isPresent()) {
             response.setStatus(true);
             Map<String, Object> data = new HashMap<>();
