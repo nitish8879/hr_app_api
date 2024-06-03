@@ -1,10 +1,9 @@
 package com.hr.hr_management.services.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import com.hr.hr_management.repo.CompanyRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.UserService;
 import com.hr.hr_management.utils.enums.EmployeeApprovalStatus;
-import com.hr.hr_management.utils.enums.UserRoleType;
 import com.hr.hr_management.utils.models.AppResponse;
 
 @Service
@@ -28,42 +26,40 @@ public class UserServiceImp implements UserService {
     private UserRepo userRepo;
     @Autowired
     private CompanyRepo companyRepo;
-    // @Autowired
-    // private LeaveActivityRepo leaveActivityRepo;
+
+    @Autowired
+    private ValidationUserService validationUserService;
 
     @Override
     public AppResponse signin(UserSigninReq req) {
         var response = new AppResponse();
         Optional<UserEntities> userData = userRepo.findByUserNameAndPassword(req.getUsername(), req.getPassword());
         if (userData.isPresent()) {
-            Optional<CompanyEntities> companyData = companyRepo.findById(userData.get().getCompanyID());
-            if (companyData.isPresent()) {
-                var userResp = new UserSigninOrSingupRes();
-                userResp.setUserID(userData.get().getId());
-                userResp.setCompanyID(userData.get().getCompanyID());
-                userResp.setUsername(userData.get().getUserName());
-                userResp.setFullName(userData.get().getFullName());
-                userResp.setCreatedAt(userData.get().getCreatedAt());
-                userResp.setRoleType(userData.get().getRoleType().name());
-
-                userResp.setTotalLeaveBalance(userData.get().getTotalLeaveBalance());
-                userResp.setTotalLeaveApproved(userData.get().getTotalLeaveApproved());
-                userResp.setTotalLeavePending(userData.get().getTotalLeavePending());
-                userResp.setTotalLeaveCancelled(userData.get().getTotalLeaveCancelled());
-
-                userResp.setCompanyName(companyData.get().getCompanyName());
-                userResp.setWrokingDays(companyData.get().getWorkingDays());
-                userResp.setInTime(companyData.get().getInTime());
-                userResp.setOutTime(companyData.get().getOutTime());
-                userResp.setEmployeeApproved(userData.get().isEmployeApproved());
-                userResp.setAdminID(companyData.get().getOwnerID());
-                userResp.setRejectedReason(userData.get().getAccountSuspendReason());
-                response.setData(userResp);
-                response.setStatus(true);
-
-            } else {
-                response.setErrorMsg("Company Not Found.");
+            if (userData.get().getFirstTimeLogin()) {
+                throw new RuntimeException("Please set new password.");
             }
+            var userResp = new UserSigninOrSingupRes();
+            userResp.setUserID(userData.get().getId());
+            userResp.setCompanyID(userData.get().getCompany().getId());
+            userResp.setUsername(userData.get().getUserName());
+            userResp.setFullName(userData.get().getFullName());
+            userResp.setCreatedAt(userData.get().getCreatedAt());
+            userResp.setRoleType(userData.get().getRoleType().name());
+
+            userResp.setTotalLeaveBalance(userData.get().getTotalLeaveBalance());
+            userResp.setTotalLeaveApproved(userData.get().getTotalLeaveApproved());
+            userResp.setTotalLeavePending(userData.get().getTotalLeavePending());
+            userResp.setTotalLeaveCancelled(userData.get().getTotalLeaveCancelled());
+
+            userResp.setCompanyName(userData.get().getCompany().getCompanyName());
+            userResp.setWrokingDays(userData.get().getCompany().getWorkingDays());
+            userResp.setInTime(userData.get().getCompany().getInTime());
+            userResp.setOutTime(userData.get().getCompany().getOutTime());
+            userResp.setEmployeeApproved(userData.get().isEmployeApproved());
+            userResp.setAdminID(userData.get().getCompany().getAdmin().getId());
+            userResp.setRejectedReason(userData.get().getAccountSuspendReason());
+            response.setData(userResp);
+            response.setStatus(true);
         } else {
             response.setErrorMsg("User Not Found.");
         }
@@ -72,14 +68,11 @@ public class UserServiceImp implements UserService {
 
     @Override
     public AppResponse signUp(UserSignupReq req) {
-
         var userexit = userRepo.findByUserName(req.getUsername());
-
         var response = new AppResponse();
-
         if (userexit.isPresent()) {
             response.setErrorMsg("Username already taken!");
-        } else if (req.getRoleType().equals(UserRoleType.SUPERADMIN.name())) {
+        } else {
             if (req.getInTime() == null || (req.getInTime().toString().isBlank())) {
                 response.setErrorMsg("Please set in Time");
             } else if (req.getOutTime() == null || (req.getOutTime().toString().isBlank())) {
@@ -92,52 +85,26 @@ public class UserServiceImp implements UserService {
                             req.getUsername(),
                             req.getPassword(),
                             req.getFullName(),
-                            UserRoleType.valueOf(req.getRoleType()));
+                            req.getRoleType());
+                    newuser.setEmployeApproved(true);
+                    newuser.setFirstTimeLogin(false);
                     var savedUserEntities = userRepo.save(newuser);
                     var newCompany = new CompanyEntities(
                             req.getCompanyName(),
-                            savedUserEntities.getId(),
+                            savedUserEntities,
                             req.getInTime(),
                             req.getOutTime(),
                             req.getWrokingDays());
-                    Collection<Integer> allEmployess = new ArrayList<>();
-                    allEmployess.add(savedUserEntities.getId());
-                    newCompany.setAllEmployesID(allEmployess);
                     var savedCompanyUserEntities = companyRepo.save(newCompany);
-                    savedUserEntities.setCompanyID(savedCompanyUserEntities.getId());
-                    savedUserEntities.setEmployeApproved(true);
-                    userRepo.save(savedUserEntities);
+                    savedUserEntities.setCompany(savedCompanyUserEntities);
+                    var savedUserEntities2 = userRepo.save(savedUserEntities);
+                    savedCompanyUserEntities.setAdmin(savedUserEntities2);
+                    companyRepo.save(savedCompanyUserEntities);
                     return signin(new UserSigninReq(req.getUsername(), req.getPassword()));
                 } catch (Exception e) {
                     response.setErrorMsg("Fail to save User Data" + e.getMessage());
                 }
             }
-        } else if (req.getRoleType().equals(UserRoleType.EMPLOYEE.name())) {
-            if (req.getCompanyID() == 0) {
-                response.setErrorMsg("Please enter proper company id");
-            } else {
-                var companyExit = companyRepo.findById(req.getCompanyID());
-                if (companyExit != null && companyExit.isPresent()) {
-                    var employeeData = new UserEntities(
-                            req.getUsername(),
-                            req.getPassword(),
-                            req.getFullName(),
-                            UserRoleType.valueOf(req.getRoleType()));
-                    employeeData.setCompanyID(req.getCompanyID());
-
-                    var userSavedData = userRepo.save(employeeData);
-                    java.util.Collection<Integer> allEmployess = companyExit.get().getAllEmployesID();
-                    allEmployess.add(userSavedData.getId());
-                    companyExit.get().setAllEmployesID(allEmployess);
-                    companyRepo.save(companyExit.get());
-                    return signin(new UserSigninReq(req.getUsername(), req.getPassword()));
-                } else {
-                    response.setErrorMsg("Compnay not found by your id.");
-                }
-            }
-
-        } else {
-            response.setErrorMsg("Please add proper Role type");
         }
 
         return response;
@@ -146,40 +113,35 @@ public class UserServiceImp implements UserService {
 
     @Override
     public AppResponse approveOrRejectEmployee(ApproveOrRejectEmployeReq req) {
+        validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
+        validationUserService.isUserValid(req.getApprovalID(), req.getCompanyID());
         AppResponse response = new AppResponse();
         var userExit = userRepo.findById(req.getUserID());
-        if (userExit != null && userExit.isPresent()) {
-            var companyExit = companyRepo.findById(req.getCompanyID());
-            if (companyExit != null && companyExit.isPresent()) {
-                if (companyExit.get().getOwnerID() == req.getUserID()) {
-                    if (companyExit.get().getAllEmployesID().contains(req.getApprovalID())) {
-                        var approvalUserExit = userRepo.findById(req.getApprovalID());
-                        if (approvalUserExit != null && approvalUserExit.isPresent()) {
-                            if (EmployeeApprovalStatus.valueOf(req.getStatus()) == EmployeeApprovalStatus.APPROVE) {
-                                approvalUserExit.get().setEmployeApproved(true);
-                                approvalUserExit.get().setAccountSuspendReason(null);
-                                response.setErrorMsg("Account approve successfully.");
-                            } else {
-                                approvalUserExit.get().setEmployeApproved(false);
-                                approvalUserExit.get().setAccountSuspendReason(req.getRejectReason());
-                                response.setErrorMsg("Account rejected successfully.");
-                            }
-                            response.setStatus(true);
-                            userRepo.save(approvalUserExit.get());
+        var approvalUserExit = userRepo.findById(req.getApprovalID());
+        if (userExit.isPresent()) {
+            if (userExit.get().getCompany().getAdmin().getId() == req.getUserID()) {
+                if (userExit.get().getCompany().getUsers().contains(approvalUserExit.get())) {
+                    if (approvalUserExit.isPresent()) {
+                        if (req.getStatus() == EmployeeApprovalStatus.APPROVE) {
+                            approvalUserExit.get().setEmployeApproved(true);
+                            approvalUserExit.get().setAccountSuspendReason(null);
+                            response.setErrorMsg("Account approve.");
                         } else {
-                            response.setErrorMsg("Approval user is not exit");
+                            approvalUserExit.get().setEmployeApproved(false);
+                            approvalUserExit.get().setAccountSuspendReason(req.getRejectReason());
+                            response.setErrorMsg("Account rejected.");
                         }
+                        response.setStatus(true);
+                        userRepo.save(approvalUserExit.get());
                     } else {
-                        response.setErrorMsg("this employee is not form this company.");
+                        response.setErrorMsg("Approval user is not exit");
                     }
                 } else {
-                    response.setErrorMsg("You are not the right person of this compnay.");
+                    response.setErrorMsg("this employee is not form this company.");
                 }
             } else {
-                response.setErrorMsg("Company not found");
+                response.setErrorMsg("You are not the right person of this compnay.");
             }
-        } else {
-            response.setErrorMsg("User not found");
         }
         return response;
     }
@@ -235,8 +197,9 @@ public class UserServiceImp implements UserService {
     // }
 
     @Override
-    public AppResponse getUserTotalLeave(Integer userID, Integer companyID) {
+    public AppResponse getUserTotalLeave(UUID userID, UUID companyID) {
         AppResponse response = new AppResponse();
+        validationUserService.isUserValid(userID, companyID);
         var userExit = userRepo.findById(userID);
         if (userExit != null && userExit.isPresent()) {
             var companyExit = companyRepo.findById(companyID);
@@ -253,6 +216,21 @@ public class UserServiceImp implements UserService {
             }
         } else {
             response.setErrorMsg("User not found");
+        }
+        return response;
+    }
+
+    @Override
+    public AppResponse updatePassword(String userName, String oldpassword, String newPasswod) {
+        var response = new AppResponse();
+        Optional<UserEntities> userData = userRepo.findByUserNameAndPassword(userName, oldpassword);
+        if (userData.isPresent()) {
+            userData.get().setFirstTimeLogin(false);
+            userData.get().setPassword(newPasswod);
+            userRepo.save(userData.get());
+            response.setStatus(true);
+        } else {
+            response.setErrorMsg("User Not Found.");
         }
         return response;
     }

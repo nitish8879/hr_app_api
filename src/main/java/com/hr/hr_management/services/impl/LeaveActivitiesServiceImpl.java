@@ -1,7 +1,5 @@
 package com.hr.hr_management.services.impl;
 
-import java.util.HashMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,21 +16,27 @@ import com.hr.hr_management.utils.models.AppResponse;
 @Service
 public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     @Autowired
-    private LeaveActivityRepo repo;
+    private LeaveActivityRepo leaveRepo;
 
     @Autowired
     private UserRepo userRepo;
 
     @Autowired
     private CompanyRepo companyRepo;
+    @Autowired
+    private ValidationUserService validationUserService;
 
     @Override
     public AppResponse applyLeave(LeaveActivityReq req) {
+        validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
+        validationUserService.isUserValid(req.getApprovalTo(), req.getCompanyID());
         AppResponse response = new AppResponse();
-        LeaveAcitivityEntities data = new LeaveAcitivityEntities();
-        data.setUserID(req.getUserID());
-        data.setCompanyID(req.getCompanyID());
-        data.setApprovalTo(req.getApprovalTo());
+        var user = userRepo.findById(req.getUserID());
+        var approvalTo = userRepo.findById(req.getApprovalTo());
+        LeaveAcitivityEntities data = new LeaveAcitivityEntities(user.get(), approvalTo.get());
+        data.setUser(user.get());
+        data.setApprovalTo(approvalTo.get());
+        data.setCompany(user.get().getCompany());
         data.setLeaveStatus(LeaveStatus.PENDING);
         data.setLeaveReason(req.getLeaveReason());
         data.setFromdate(req.getFromdate());
@@ -45,7 +49,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
                     userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() + 1);
                     userRepo.save(userExit.get());
 
-                    var savedData = repo.save(data);
+                    var savedData = leaveRepo.save(data);
                     response.setData(savedData);
                     response.setStatus(true);
                     response.setData(savedData);
@@ -66,46 +70,30 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     @Override
     public AppResponse approveOrRejectLeave(LeaveActivityApproveRejectReq req) {
         AppResponse response = new AppResponse();
+        validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
         var userExit = userRepo.findById(req.getEmployeeID());
-        if (userExit != null && userExit.isPresent()) {
-            var companyExit = companyRepo.findById(req.getCompanyID());
-            if (companyExit != null && companyExit.isPresent()) {
-                if (req.getLeaveStatus() == LeaveStatus.REJECTED.name()
-                        && (req.getRejectReason() == null || req.getRejectReason().isEmpty())) {
-                    response.setStatus(false);
-                    response.setErrorMsg("Please enter reject reason");
-                } else {
-                    var leaveData = repo.findById(req.getLeaveID());
-
-                    if (leaveData == null || !leaveData.isPresent()) {
-                        response.setStatus(false);
-                        response.setErrorMsg("Leave Data not found by your ID");
-                    } else if (leaveData.get().getApprovalTo() != req.getUserID()) {
-                        response.setStatus(false);
-                        response.setErrorMsg("You are not the right person to approve this.");
-                    } else {
-                        leaveData.get().setLeaveStatus(LeaveStatus.valueOf(req.getLeaveStatus()));
-                        leaveData.get().setRejectedReason(req.getRejectReason());
-                        if (leaveData.get().getLeaveStatus() == LeaveStatus.APPROVED) {
-                            userExit.get().setTotalLeaveApproved(userExit.get().getTotalLeaveApproved() + 1);
-                        } else {
-                            userExit.get().setTotalLeaveCancelled(userExit.get().getTotalLeaveCancelled() + 1);
-                        }
-                        if (userExit.get().getTotalLeavePending() > 0) {
-                            userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() - 1);
-                        }
-                        var saveData = repo.save(leaveData.get());
-                        userRepo.save(userExit.get());
-                        response.setStatus(true);
-                        response.setData(saveData);
-                    }
-                }
-
-            } else {
-                response.setErrorMsg("Company not found");
-            }
+        var leaveData = leaveRepo.findById(req.getLeaveID());
+        if (leaveData == null || !leaveData.isPresent()) {
+            response.setStatus(false);
+            response.setErrorMsg("Leave Data not found by your ID");
+        } else if (leaveData.get().getApprovalTo().getId() != req.getUserID()) {
+            response.setStatus(false);
+            response.setErrorMsg("You are not the right person to approve this.");
         } else {
-            response.setErrorMsg("User not found");
+            leaveData.get().setLeaveStatus(req.getLeaveStatus());
+            leaveData.get().setRejectedReason(req.getRejectReason());
+            if (leaveData.get().getLeaveStatus() == LeaveStatus.APPROVED) {
+                userExit.get().setTotalLeaveApproved(userExit.get().getTotalLeaveApproved() + 1);
+            } else {
+                userExit.get().setTotalLeaveCancelled(userExit.get().getTotalLeaveCancelled() + 1);
+            }
+            if (userExit.get().getTotalLeavePending() > 0) {
+                userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() - 1);
+            }
+            var saveData = leaveRepo.save(leaveData.get());
+            userRepo.save(userExit.get());
+            response.setStatus(true);
+            response.setData(saveData);
         }
 
         return response;
@@ -115,7 +103,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     public AppResponse getAllLeavesByCompanyID(Integer userID, Integer companyID) {
         AppResponse response = new AppResponse();
         try {
-            var data = repo.findByUserIDAndCompanyID(userID,companyID);
+            var data = leaveRepo.findByUserIDAndCompanyID(userID, companyID);
             response.setData(data);
             response.setStatus(true);
         } catch (Exception e) {

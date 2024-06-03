@@ -1,6 +1,7 @@
 package com.hr.hr_management.controllers;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,12 +30,12 @@ public class UserActivityController {
 
 
     @GetMapping("/getDataByIDAndCompanyIdAndDate")
-    public AppResponse getDataByIDAndCompanyIdAndDate(@RequestParam Integer id, Integer compnayID, LocalDate date) {
+    public AppResponse getDataByIDAndCompanyIdAndDate(@RequestParam UUID id, UUID compnayID, LocalDate date) {
         return service.getdailyInOutByIDAndDate(id, compnayID, date);
     }
 
     @GetMapping("/getActivityList")
-    public AppResponse getActivityList(@RequestParam Integer id, Integer compnayID, LocalDate date) {
+    public AppResponse getActivityList(@RequestParam UUID id, UUID compnayID, LocalDate date) {
         return service.getActivityList(id, compnayID, date);
     }
     

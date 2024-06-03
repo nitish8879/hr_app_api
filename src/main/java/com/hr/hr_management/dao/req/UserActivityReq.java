@@ -1,6 +1,7 @@
 package com.hr.hr_management.dao.req;
 
 import java.sql.Time;
+import java.util.UUID;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Pattern;
@@ -10,11 +11,11 @@ import lombok.Data;
 public class UserActivityReq {
 
     @Nullable
-    private int activityID;
+    private UUID activityID;
 
-    private int userID;
+    private UUID userID;
 
-    private int companyID;
+    private UUID companyID;
 
     @Pattern(regexp = "^(IN|BREAKIN|BREAKOUT|OUT)$", message = "Invalid user role type. Allowed values are IN|BREAKIN|BREAKOUT|OUT.")
     private String activityType;

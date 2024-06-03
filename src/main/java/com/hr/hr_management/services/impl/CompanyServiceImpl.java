@@ -1,8 +1,8 @@
 package com.hr.hr_management.services.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,22 +18,18 @@ public class CompanyServiceImpl implements CompanyService {
     private CompanyRepo companyRepo;
 
     @Override
-    public AppResponse createHoliday(Integer compnayID, String label, Date date) {
+    public AppResponse createHoliday(UUID compnayID, String label, Date date) {
         AppResponse response = new AppResponse();
-        HolidayEntity newHoliday = new HolidayEntity();
-        newHoliday.setHolidayDate(date);
-        newHoliday.setLabel(label);
         var company = companyRepo.findById(compnayID);
         if (company.isPresent()) {
-            // company.get().getHolidays().add(newHoliday);
+            HolidayEntity newHoliday = new HolidayEntity(company.get());
+            newHoliday.setHolidayDate(date);
+            newHoliday.setLabel(label);
             var allHolidays = company.get().getHolidays();
-            if (allHolidays == null) {
-                allHolidays = new ArrayList<>();
-            }
             allHolidays.add(newHoliday);
             company.get().setHolidays(allHolidays);
             try {
-                response.setData(companyRepo.save(company.get()));;
+                response.setData(companyRepo.save(company.get()));
                 response.setStatus(true);
             } catch (Exception e) {
                 response.setErrorMsg(e.getMessage());
@@ -45,7 +41,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<HolidayEntity> getAllHoliday(Integer compnayID) {
+    public List<HolidayEntity> getAllHoliday(UUID compnayID) {
         var company = companyRepo.findById(compnayID);
         return company.get().getHolidays();
     }

@@ -3,8 +3,10 @@ package com.hr.hr_management.dao.req;
 import java.sql.Time;
 import java.util.List;
 
+import com.hr.hr_management.utils.enums.UserRoleType;
+
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -21,10 +23,8 @@ public class UserSignupReq {
     @NotBlank(message = "FullName can't be empty")
     private String fullName;
 
-    // ADMIN,EMPLOYEE
-    @Pattern(regexp = "^(ADMIN|EMPLOYEE)$", message = "Invalid user role type. Allowed values are ADMIN or EMPLOYEE.")
-    @NotBlank(message = "roleType can't be empty")
-    private String roleType;
+    @NotNull(message = "roleType can't be empty")
+    private UserRoleType roleType;
 
     private int companyID;
 

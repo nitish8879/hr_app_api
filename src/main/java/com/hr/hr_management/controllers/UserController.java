@@ -16,6 +16,7 @@ import com.hr.hr_management.utils.models.AppResponse;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -44,8 +45,13 @@ public class UserController {
     }
 
     @GetMapping("/getTotalLeave")
-    public AppResponse getMethodName(@RequestParam("userID") Integer userID, @RequestParam("companyID") Integer companyID) {
+    public AppResponse getMethodName(@RequestParam("userID") UUID userID, @RequestParam("companyID") UUID companyID) {
         return userService.getUserTotalLeave(userID, companyID);
     }
 
+    @GetMapping("/getTotalLeave")
+    public AppResponse updatePassword(@RequestParam("username") String username,
+            @RequestParam("passWord") String passWord, @RequestParam("newpassword") String newPassword) {
+        return userService.updatePassword(username, passWord, newPassword);
+    }
 }

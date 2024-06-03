@@ -1,5 +1,7 @@
 package com.hr.hr_management.services;
 
+import java.util.UUID;
+
 import com.hr.hr_management.dao.req.ApproveOrRejectEmployeReq;
 import com.hr.hr_management.dao.req.UserSigninReq;
 import com.hr.hr_management.dao.req.UserSignupReq;
@@ -14,5 +16,7 @@ public interface UserService {
 
     public AppResponse findAllEmployesByCompanyID(Integer userID);
 
-    public AppResponse getUserTotalLeave(Integer userID,Integer companyID);
+    public AppResponse getUserTotalLeave(UUID userID, UUID companyID);
+
+    public AppResponse updatePassword(String userName,String oldpassword,String newPasswod);
 }

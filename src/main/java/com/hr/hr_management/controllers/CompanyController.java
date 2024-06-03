@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -21,12 +22,12 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping("/create")
-    public AppResponse createHoliday(@RequestParam("companyId") Integer companyId,@RequestParam("label") String label,@RequestParam("date") Date date) {
+    public AppResponse createHoliday(@RequestParam("companyId") UUID companyId,@RequestParam("label") String label,@RequestParam("date") Date date) {
         return companyService.createHoliday(companyId, label, date);
     }
 
     @GetMapping("/getHoliday")
-    public List<HolidayEntity> getMethodName(@RequestParam("companyId") Integer companyId) {
+    public List<HolidayEntity> getMethodName(@RequestParam("companyId") UUID companyId) {
         return companyService.getAllHoliday(companyId);
     }
     

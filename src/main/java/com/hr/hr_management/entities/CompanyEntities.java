@@ -2,22 +2,22 @@ package com.hr.hr_management.entities;
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hr.hr_management.utils.enums.WrokingDays;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
@@ -25,16 +25,25 @@ import lombok.Data;
 @Entity
 public class CompanyEntities {
 
+    public CompanyEntities() {
+    }
+
+    public CompanyEntities(String companyName, UserEntities admin, Time inTime, Time outTime,
+            List<String> workingDays) {
+        this.companyName = companyName;
+        this.admin = admin;
+        this.inTime = inTime;
+        this.outTime = outTime;
+        this.workingDays = workingDays;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id")
-    private int id;// companyID
+    private UUID id;
 
     @Column(nullable = false)
     private String companyName;
-
-    @Column(unique = true, nullable = false, updatable = false)
-    private int ownerID;
 
     @Column(nullable = false)
     private Time inTime;
@@ -45,26 +54,25 @@ public class CompanyEntities {
     @Convert(converter = WrokingDays.class)
     private List<String> workingDays;
 
-    @ElementCollection
-    @Column(nullable = true)
-    private Collection<Integer> allEmployesID = new ArrayList<Integer>();
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntities admin;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "company_holidays", joinColumns = @JoinColumn(name = "company_id"), inverseJoinColumns = @JoinColumn(name = "holiday_id"))
-    private List<HolidayEntity> holidays;
+    @JsonIgnore
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<UserEntities> users = new ArrayList<>();
 
-    public CompanyEntities() {
-    }
+    @JsonIgnore
+    @ManyToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<HolidayEntity> holidays = new ArrayList<>();
 
-    public CompanyEntities(String companyName, int ownerID, Time inTime, Time outTime, List<String> workingDays) {
-        this.companyName = companyName;
-        this.ownerID = ownerID;
-        this.inTime = inTime;
-        this.outTime = outTime;
-        this.workingDays = workingDays;
-    }
-
-    @OneToMany(mappedBy = "company")
-    private List<TeamsEntities> teams;
+    @JsonIgnore
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<TeamsEntities> allLeaves = new ArrayList<>();
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<TeamsEntities> teams = new ArrayList<>();
 
 }

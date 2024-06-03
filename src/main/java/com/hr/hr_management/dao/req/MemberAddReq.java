@@ -11,7 +11,7 @@ import lombok.Data;
 public class MemberAddReq {
 
     @NotNull(message = "UserID can't be empty")
-    private Integer creatingUserID;
+    private UUID creatingUserID;
 
     @NotBlank(message = "Full name cannot be blank")
     private String fullName;
@@ -24,5 +24,5 @@ public class MemberAddReq {
 
     @NotNull(message = "Company ID cannot be null")
     @Positive(message = "Company ID must be a positive number")
-    private Integer companyID;
+    private UUID companyID;
 }

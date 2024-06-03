@@ -2,9 +2,11 @@ package com.hr.hr_management.entities;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hr.hr_management.utils.enums.LeaveStatus;
 
 import jakarta.persistence.Column;
@@ -13,23 +15,21 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
 @Entity
 public class LeaveAcitivityEntities {
+    public LeaveAcitivityEntities(UserEntities user,UserEntities approvalTo){
+        this.user = user;
+        this.approvalTo = approvalTo;
+    }
     @Id
     @GeneratedValue
-    private int id;
-
-    @Column(nullable = false)
-    private int userID;
-
-    @Column(nullable = false)
-    private int companyID;
-
-    @Column(nullable = false)
-    private int approvalTo;
+    private UUID id;
 
     @CreationTimestamp
     private LocalDate applyDate;
@@ -49,5 +49,20 @@ public class LeaveAcitivityEntities {
 
     @Column(nullable = true)
     private String rejectedReason;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntities user;
+
+    @JsonIgnore
+    @OneToMany
+    @JoinColumn(name = "company_id", nullable = false)
+    private CompanyEntities company;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntities approvalTo;
 
 }

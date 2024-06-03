@@ -3,18 +3,18 @@ package com.hr.hr_management.dao.resp;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 @Data
 public class UserSigninOrSingupRes {
 
-    private int userID;
+    private UUID userID;
 
-    private int companyID;
+    private UUID companyID;
 
-    private int adminID;
+    private UUID adminID;
 
     private String username;
 
@@ -24,13 +24,13 @@ public class UserSigninOrSingupRes {
 
     private String roleType;
 
-    private int totalLeaveBalance;
+    private Integer totalLeaveBalance;
 
-    private int totalLeaveApproved;
+    private Integer totalLeaveApproved;
 
-    private int totalLeavePending;
+    private Integer totalLeavePending;
 
-    private int totalLeaveCancelled;
+    private Integer totalLeaveCancelled;
 
     private String companyName;
 

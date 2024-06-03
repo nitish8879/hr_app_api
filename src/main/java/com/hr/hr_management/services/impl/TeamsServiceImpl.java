@@ -1,5 +1,7 @@
 package com.hr.hr_management.services.impl;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,20 +55,16 @@ public class TeamsServiceImpl implements TeamsService {
             newUser.setUserName(req.getUserName());
             newUser.setPassword(req.getUserName());
             newUser.setFullName(req.getFullName());
-            newUser.setCompanyID(req.getCompanyID());
+            newUser.setCompany(userExit.get().getCompany());
             newUser.setCreatedBy(req.getCreatingUserID());
             newUser.setEmployeApproved(true);
             userRepo.save(newUser);
-            var members = team.get().getMembers();
-            members.add(newUser);
-            team.get().setMembers(members);
-            teamRepo.save(team.get());
         }
         return "Member Added";
     }
 
     @Override
-    public Object fetchTeamsAndMembers(Integer companyID,Integer userID) {
+    public Object fetchTeamsAndMembers(UUID companyID, UUID userID) {
         validationUserService.isUserValid(userID, companyID);
         var companyExit = companyRepo.findById(companyID);
         if (!companyExit.isPresent()) {

@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hr.hr_management.dao.req.UserActivityReq;
 import com.hr.hr_management.entities.UserActivityEntities;
-import com.hr.hr_management.repo.CompanyRepo;
 import com.hr.hr_management.repo.UserActivitiesRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.UserActivitiesService;
@@ -26,169 +26,115 @@ public class UserActivitiesImpl implements UserActivitiesService {
     private UserRepo userRepo;
 
     @Autowired
-    private CompanyRepo companyRepo;
+    private ValidationUserService validationUserService;
 
-    @SuppressWarnings("null")
     @Override
     public AppResponse dailyInOut(UserActivityReq req) {
+        validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
         AppResponse response = new AppResponse();
         var userExit = userRepo.findById(req.getUserID());
 
-        if (userExit != null && userExit.isPresent()) {
-
-            if (userExit.get().isEmployeApproved()) {
-
-                var compnayExit = companyRepo.findById(req.getCompanyID());
-
-                if (compnayExit != null && compnayExit.isPresent()) {
-
-                    if (compnayExit.get().getAllEmployesID().contains(req.getUserID())) {
-                        if (req.getActivityID() == 0) {
-                            var saveUserEntities = userActivitiesRepo.save(new UserActivityEntities(
-                                    req.getUserID(),
-                                    req.getCompanyID(),
-                                    req.getInTime()));
-                            response.setStatus(true);
-                            response.setData(saveUserEntities);
-                        } else {
-                            var recordExit = userActivitiesRepo.findById(req.getActivityID());
-                            if (recordExit != null && recordExit.isPresent()) {
-                                if (recordExit.get().getUserID() != req.getUserID()) {
-                                    response.setStatus(false);
-                                    response.setErrorMsg("You are not the right person to update this data");
-                                } else if (req.getActivityType() == UserActivitiesType.IN.name()) {
-                                    recordExit.get().setInTime(req.getInTime());
-                                } else if ((req.getActivityType().equals(UserActivitiesType.BREAKIN.name()))) {
-                                    if (recordExit.get().getBreakInTimes() == null) {
-                                        recordExit.get().setBreakInTimes(new ArrayList<>());
-                                    }
-                                    recordExit.get().getBreakInTimes().add(req.getBreakInTime());
-                                } else if ((req.getActivityType().equals(UserActivitiesType.BREAKOUT.name()))) {
-                                    if (recordExit.get().getBreakOutTimes() == null) {
-                                        recordExit.get().setBreakOutTimes(new ArrayList<>());
-                                    }
-                                    recordExit.get().getBreakOutTimes().add(req.getBreakOutTime());
-                                } else {
-                                    recordExit.get().setOutTime(req.getOutTime());
-                                }
-                                response.setData(userActivitiesRepo.save(recordExit.get()));
-                                response.setStatus(true);
-                            } else {
-                                response.setErrorMsg("Fail to upload Data");
-
-                            }
-                        }
-                    } else {
-                        response.setErrorMsg("User is not from this compnay");
-                    }
-                } else {
-                    response.setErrorMsg("Company not exit exit in db");
-                }
-            } else {
-                response.setErrorMsg("Your account is not active");
-            }
+        if (req.getActivityID() == null) {
+            var saveUserEntities = userActivitiesRepo.save(new UserActivityEntities(
+                    userExit.get(),
+                    req.getInTime()));
+            response.setStatus(true);
+            response.setData(saveUserEntities);
         } else {
-            response.setErrorMsg("UserNot exit in db");
+            var recordExit = userActivitiesRepo.findById(req.getActivityID());
+            if (recordExit != null && recordExit.isPresent()) {
+                if (recordExit.get().getUser().getId() != req.getUserID()) {
+                    response.setStatus(false);
+                    response.setErrorMsg("You are not the right person to update this data");
+                } else if (req.getActivityType() == UserActivitiesType.IN.name()) {
+                    recordExit.get().setInTime(req.getInTime());
+                } else if ((req.getActivityType().equals(UserActivitiesType.BREAKIN.name()))) {
+                    if (recordExit.get().getBreakInTimes() == null) {
+                        recordExit.get().setBreakInTimes(new ArrayList<>());
+                    }
+                    recordExit.get().getBreakInTimes().add(req.getBreakInTime());
+                } else if ((req.getActivityType().equals(UserActivitiesType.BREAKOUT.name()))) {
+                    if (recordExit.get().getBreakOutTimes() == null) {
+                        recordExit.get().setBreakOutTimes(new ArrayList<>());
+                    }
+                    recordExit.get().getBreakOutTimes().add(req.getBreakOutTime());
+                } else {
+                    recordExit.get().setOutTime(req.getOutTime());
+                }
+                response.setData(userActivitiesRepo.save(recordExit.get()));
+                response.setStatus(true);
+            } else {
+                response.setErrorMsg("Fail to upload Data");
+
+            }
         }
 
         return response;
     }
 
     @Override
-    public AppResponse getdailyInOutByIDAndDate(int userID, int compnayID, LocalDate date) {
+    public AppResponse getdailyInOutByIDAndDate(UUID userID, UUID compnayID, LocalDate date) {
+        validationUserService.isUserValid(userID, compnayID);
         AppResponse response = new AppResponse();
-        var userExit = userRepo.findById(userID);
-        if (userExit != null && userExit.isPresent()) {
-            if (userExit.get().isEmployeApproved()) {
-                var compnayExit = companyRepo.findById(compnayID);
-                if (compnayExit != null && compnayExit.isPresent()) {
-                    if (compnayExit.get().getAllEmployesID().contains(userID)) {
-                        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(userID, compnayID,
-                                date);
-                        if (foundData != null && foundData.isPresent()) {
-                            response.setStatus(true);
-                            response.setData(foundData.get());
-                        } else {
-                            response.setErrorMsg("Data not found.");
-                        }
-                    } else {
-                        response.setErrorMsg("User is not from this compnay");
-                    }
-                } else {
-                    response.setErrorMsg("Company not exit exit in db");
-                }
-            } else {
-                response.setErrorMsg("Your account is not active");
-            }
+        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(userID, compnayID,
+                date);
+        if (foundData != null && foundData.isPresent()) {
+            response.setStatus(true);
+            response.setData(foundData.get());
         } else {
-            response.setErrorMsg("User not exit in db");
+            response.setErrorMsg("Activities not found.");
         }
         return response;
     }
 
     @Override
-    public AppResponse getActivityList(Integer id, Integer compnayID, LocalDate date) {
+    public AppResponse getActivityList(UUID id, UUID compnayID, LocalDate date) {
+        validationUserService.isUserValid(id, compnayID);
         AppResponse response = new AppResponse();
         var userExit = userRepo.findById(id);
-        if (userExit != null && userExit.isPresent()) {
-            if (userExit.get().isEmployeApproved()) {
-                var compnayExit = companyRepo.findById(compnayID);
-                if (compnayExit != null && compnayExit.isPresent()) {
-                    if (compnayExit.get().getAllEmployesID().contains(id)) {
-                        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(id, compnayID, date);
-                        if (foundData != null && foundData.isPresent()) {
-                            response.setStatus(true);
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("activityID", foundData.get().getId());
-                            data.put("date", foundData.get().getCreatedAt());
-                            if (foundData.get().getInTime() != null) {
-                                HashMap<String, Object> checkIn = new HashMap<>();
-                                checkIn.put("inTime", foundData.get().getInTime());
-                                if (foundData.get().getInTime().after(compnayExit.get().getInTime())) {
-                                    checkIn.put("msg", "Late ");
-                                } else {
-                                    checkIn.put("msg", "On Time");
-                                }
-                                data.put("checkIn", checkIn);
-                            }
-                            if (foundData.get().getBreakInTimes() != null
-                                    && !foundData.get().getBreakInTimes().isEmpty()) {
-                                data.put("breakInTime", foundData.get().getBreakInTimes());
-                            }
-
-                            if (foundData.get().getBreakOutTimes() != null
-                                    && !foundData.get().getBreakOutTimes().isEmpty()) {
-                                data.put("breakOutTime", foundData.get().getBreakOutTimes());
-                            }
-
-                            if (foundData.get().getOutTime() != null) {
-                                HashMap<String, Object> outTime = new HashMap<>();
-                                outTime.put("outTime", foundData.get().getOutTime());
-                                if (foundData.get().getOutTime().after(compnayExit.get().getOutTime())) {
-                                    outTime.put("msg", "Over Time ");
-                                } else {
-                                    outTime.put("msg", "On Time");
-                                }
-                                data.put("outTime", outTime);
-
-                            }
-
-                            response.setData(data);
-                        } else {
-                            response.setErrorMsg("Data not found.");
-                        }
-                    } else {
-                        response.setErrorMsg("User is not from this compnay");
-                    }
+        var foundData = userActivitiesRepo.findByUserIDAndCompanyIDAndCreatedAt(id, compnayID, date);
+        if (foundData != null && foundData.isPresent()) {
+            response.setStatus(true);
+            Map<String, Object> data = new HashMap<>();
+            data.put("activityID", foundData.get().getId());
+            data.put("date", foundData.get().getCreatedAt());
+            if (foundData.get().getInTime() != null) {
+                HashMap<String, Object> checkIn = new HashMap<>();
+                checkIn.put("inTime", foundData.get().getInTime());
+                if (foundData.get().getInTime().after(userExit.get().getCompany().getInTime())) {
+                    checkIn.put("msg", "Late ");
                 } else {
-                    response.setErrorMsg("Company not exit exit in db");
+                    checkIn.put("msg", "On Time");
                 }
-            } else {
-                response.setErrorMsg("Your account is not active");
+                data.put("checkIn", checkIn);
             }
+            if (foundData.get().getBreakInTimes() != null
+                    && !foundData.get().getBreakInTimes().isEmpty()) {
+                data.put("breakInTime", foundData.get().getBreakInTimes());
+            }
+
+            if (foundData.get().getBreakOutTimes() != null
+                    && !foundData.get().getBreakOutTimes().isEmpty()) {
+                data.put("breakOutTime", foundData.get().getBreakOutTimes());
+            }
+
+            if (foundData.get().getOutTime() != null) {
+                HashMap<String, Object> outTime = new HashMap<>();
+                outTime.put("outTime", foundData.get().getOutTime());
+                if (foundData.get().getOutTime().after(userExit.get().getCompany().getOutTime())) {
+                    outTime.put("msg", "Over Time ");
+                } else {
+                    outTime.put("msg", "On Time");
+                }
+                data.put("outTime", outTime);
+
+            }
+
+            response.setData(data);
         } else {
-            response.setErrorMsg("User not exit in db");
+            response.setErrorMsg("Data not found.");
         }
+
         return response;
     }
 

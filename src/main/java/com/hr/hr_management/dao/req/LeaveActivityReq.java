@@ -1,11 +1,11 @@
 package com.hr.hr_management.dao.req;
 
 import java.sql.Date;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(staticName = "create")
 @NoArgsConstructor
 public class LeaveActivityReq {
-    private int userID;
+    private UUID userID;
 
-    private int companyID;
+    private UUID companyID;
 
-    private int approvalTo;
+    private UUID approvalTo;
 
     @NotBlank(message = "leaveStatus can't be empty")
     private String leaveStatus;
@@ -29,7 +29,6 @@ public class LeaveActivityReq {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date todate;
 
-    // PENDING,APPROVED, REJECTED
     @NotBlank(message = "leaveReason can't be empty")
     private String leaveReason;
 

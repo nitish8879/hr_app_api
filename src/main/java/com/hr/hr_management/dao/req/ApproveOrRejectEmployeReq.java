@@ -1,19 +1,26 @@
 package com.hr.hr_management.dao.req;
 
+import java.util.UUID;
+
+import com.hr.hr_management.utils.enums.EmployeeApprovalStatus;
+
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class ApproveOrRejectEmployeReq {
-    private int userID;
+    @NotNull(message = "User ID can't be null.")
+    private UUID userID;
 
-    private int companyID;
+    @NotNull(message = "Compnay ID can't be null.")
+    private UUID companyID;
 
-    private int approvalID;
+    @NotNull(message = "Approval ID can't be null.")
+    private UUID approvalID;
 
-    @Pattern(regexp = "^(APPROVE|REJECT)$", message = "Invalid staus type. Allowed values are APPROVE or REJECT.")
-    private String status;
+    @NotNull(message = "status can't be null.")
+    private EmployeeApprovalStatus status;
 
     @Nullable
     private String rejectReason;

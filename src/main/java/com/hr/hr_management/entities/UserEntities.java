@@ -1,29 +1,48 @@
 package com.hr.hr_management.entities;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hr.hr_management.utils.enums.UserRoleType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
 @Entity
 public class UserEntities {
 
+    public UserEntities() {
+    }
+
+    public UserEntities(String userName, String password, String fullName, UserRoleType roleType) {
+        this.userName = userName;
+        this.password = password;
+        this.fullName = fullName;
+        this.roleType = roleType;
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "user_id")
-    private Integer id;
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String userName;
@@ -41,42 +60,45 @@ public class UserEntities {
     @Column(nullable = false, updatable = false)
     private UserRoleType roleType;
 
-    @Column(nullable = false, updatable = false)
-    private int companyID;
-
+    @JsonIgnore
     private boolean employeApproved = false;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalLeaveBalance;
+    private Integer totalLeaveBalance;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalLeaveApproved;
+    private Integer totalLeaveApproved;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalLeavePending;
+    private Integer totalLeavePending;
 
     @Column(columnDefinition = "tinyint(1) default 0")
-    private int totalLeaveCancelled;
+    private Integer totalLeaveCancelled;
 
     @Column(nullable = true)
     private String accountSuspendReason;
 
+    @JsonIgnore
     private Boolean firstTimeLogin = Boolean.TRUE;
 
-    public UserEntities() {
-    }
-
     @Column(nullable = true)
-    private Integer createdBy;
+    private UUID createdBy;
 
-    public UserEntities(String userName, String password, String fullName, UserRoleType roleType) {
-        this.userName = userName;
-        this.password = password;
-        this.fullName = fullName;
-        this.roleType = roleType;
-    }
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompanyEntities company;
 
-    @ManyToMany(mappedBy = "members")
-    private List<TeamsEntities> teams;
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+    private List<TeamsEntities> teams = new ArrayList<>();;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserActivityEntities> activities = new ArrayList<>();;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<LeaveAcitivityEntities> leaves = new ArrayList<>();
 }

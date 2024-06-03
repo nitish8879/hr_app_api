@@ -3,7 +3,7 @@ package com.hr.hr_management.entities;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,21 +14,26 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 @Data
 @Entity
 public class UserActivityEntities {
 
+    public UserActivityEntities(UserEntities user, Time inTime) {
+        this.user = user;
+        this.inTime = inTime;
+    }
+
+    public UserActivityEntities() {
+    }
+
     @Id
     @GeneratedValue
-    private int id;
-
-    @Column(nullable = false)
-    private int userID;
-
-    @Column(nullable = false)
-    private int companyID;
+    @Column(name = "activity_id")
+    private UUID id;
 
     @Convert(converter = TimeListConverter.class)
     @Column(columnDefinition = "TEXT")
@@ -48,13 +53,8 @@ public class UserActivityEntities {
     @Column(updatable = false)
     private LocalDate createdAt;
 
-    public UserActivityEntities(int userID, int companyID, Time inTime) {
-        this.userID = userID;
-        this.companyID = companyID;
-        this.inTime = inTime;
-    }
-
-    public UserActivityEntities() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntities user;
 
 }
