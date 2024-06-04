@@ -28,7 +28,7 @@ public class LeaveAcitivityEntities {
 
     public LeaveAcitivityEntities(LeaveStatus leaveStatus,
             Date fromdate, Date toDate, String leaveReason, CompanyEntities company, UserEntities user,
-            UUID approvalTo) {
+            UserEntities approvalTo) {
         this.leaveStatus = leaveStatus;
         this.fromdate = fromdate;
         this.todate = toDate;
@@ -62,6 +62,10 @@ public class LeaveAcitivityEntities {
     @Column(nullable = true)
     private String rejectedReason;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id_approval", nullable = false)
+    private UserEntities approvalTo;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
@@ -72,6 +76,4 @@ public class LeaveAcitivityEntities {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntities user;
 
-    @JsonIgnore
-    private UUID approvalTo;
 }

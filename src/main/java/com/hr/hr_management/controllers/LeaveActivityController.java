@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hr.hr_management.dao.req.LeaveActivityApproveRejectReq;
 import com.hr.hr_management.dao.req.LeaveActivityReq;
 import com.hr.hr_management.services.LeaveActivitiesService;
+import com.hr.hr_management.utils.enums.UserRoleType;
 import com.hr.hr_management.utils.models.AppResponse;
 
 import jakarta.validation.Valid;
@@ -25,8 +26,8 @@ public class LeaveActivityController {
 
     @GetMapping("/getAllLeaves")
     public AppResponse getAllLeaves(@RequestParam("userID") UUID userID,
-            @RequestParam("companyID") UUID companyID) {
-        return service.getAllLeavesByCompanyID(userID, companyID);
+            @RequestParam("companyID") UUID companyID,@RequestParam("roleType") UserRoleType roleType,@RequestParam("myLeave") Boolean myLeave) {
+        return service.getAllLeaves(userID, companyID,roleType,myLeave);
     }
 
     @PostMapping("/approveReject")

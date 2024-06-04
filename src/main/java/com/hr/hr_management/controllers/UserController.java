@@ -51,7 +51,7 @@ public class UserController {
 
     @GetMapping("/updatePassword")
     public AppResponse updatePassword(@RequestParam("username") String username,
-            @RequestParam("passWord") String passWord, @RequestParam("newpassword") String newPassword) {
-        return userService.updatePassword(username, passWord, newPassword);
+            @RequestParam("oldpassword") String oldpassword, @RequestParam("newpassword") String newPassword) {
+        return userService.updatePassword(username, oldpassword, newPassword);
     }
 }

@@ -66,6 +66,10 @@ public class UserEntities {
     @Column(columnDefinition = "tinyint(1) default 0")
     private Integer totalLeaveBalance;
 
+    @JsonIgnore
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private Integer totalWFHBalance;
+
     // @JsonIgnore
     // @Column(columnDefinition = "tinyint(1) default 0")
     // private Integer totalLeaveApproved;
