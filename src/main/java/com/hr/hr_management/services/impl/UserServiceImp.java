@@ -47,9 +47,9 @@ public class UserServiceImp implements UserService {
             userResp.setRoleType(userData.get().getRoleType().name());
 
             userResp.setTotalLeaveBalance(userData.get().getTotalLeaveBalance());
-            userResp.setTotalLeaveApproved(userData.get().getTotalLeaveApproved());
-            userResp.setTotalLeavePending(userData.get().getTotalLeavePending());
-            userResp.setTotalLeaveCancelled(userData.get().getTotalLeaveCancelled());
+            // userResp.setTotalLeaveApproved(userData.get().getTotalLeaveApproved());
+            // userResp.setTotalLeavePending(userData.get().getTotalLeavePending());
+            // userResp.setTotalLeaveCancelled(userData.get().getTotalLeaveCancelled());
 
             userResp.setCompanyName(userData.get().getCompany().getCompanyName());
             userResp.setWrokingDays(userData.get().getCompany().getWorkingDays());
@@ -205,10 +205,10 @@ public class UserServiceImp implements UserService {
             var companyExit = companyRepo.findById(companyID);
             if (companyExit != null && companyExit.isPresent()) {
                 var totalLeave = new HashMap<>();
-                totalLeave.put("totalLeaveBalance", userExit.get().getTotalLeaveBalance());
-                totalLeave.put("totalLeaveApproved", userExit.get().getTotalLeaveApproved());
-                totalLeave.put("totalLeavePending", userExit.get().getTotalLeavePending());
-                totalLeave.put("totalLeaveCancelled", userExit.get().getTotalLeaveCancelled());
+                // totalLeave.put("totalLeaveBalance", userExit.get().getTotalLeaveBalance());
+                // totalLeave.put("totalLeaveApproved", userExit.get().getTotalLeaveApproved());
+                // totalLeave.put("totalLeavePending", userExit.get().getTotalLeavePending());
+                // totalLeave.put("totalLeaveCancelled", userExit.get().getTotalLeaveCancelled());
                 response.setStatus(true);
                 response.setData(totalLeave);
             } else {

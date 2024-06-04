@@ -1,5 +1,8 @@
 package com.hr.hr_management.services.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import com.hr.hr_management.repo.CompanyRepo;
 import com.hr.hr_management.repo.TeamRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.TeamsService;
+import com.hr.hr_management.utils.enums.UserRoleType;
 
 @Service
 public class TeamsServiceImpl implements TeamsService {
@@ -31,11 +35,18 @@ public class TeamsServiceImpl implements TeamsService {
 
     @Override
     public String createTeam(CreateTeamReq req) {
+
         validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
-        TeamsEntities teamsEntities = new TeamsEntities();
-        teamsEntities.setTeamName(req.getTeamName());
-        teamsEntities.setCompany(companyRepo.findById(req.getCompanyID()).get());
+
+        var userExit = userRepo.findById(req.getUserID());
+
+        List<UserEntities> members = new ArrayList<UserEntities>();
+        members.add(userExit.get());
+        TeamsEntities teamsEntities = new TeamsEntities(req.getTeamName(),
+                userExit.get().getCompany(), members.get(0), members);
+
         teamRepo.save(teamsEntities);
+
         return "Team Created";
     }
 
@@ -46,31 +57,69 @@ public class TeamsServiceImpl implements TeamsService {
         var userExit = userRepo.findByUserName(req.getUserName());
         if (!team.isPresent()) {
             throw new RuntimeException("Team not Found");
-        } else if (team.get().getCompany().getId() != req.getCompanyID()) {
+        } else if (!team.get().getCompany().getId().toString().equals(req.getCompanyID().toString())) {
             throw new RuntimeException("Team is not belongs to this company");
         } else if (userExit.isPresent()) {
             throw new RuntimeException("User Already exits");
         } else {
+            var company = companyRepo.findById(req.getCompanyID());
             UserEntities newUser = new UserEntities();
             newUser.setUserName(req.getUserName());
             newUser.setPassword(req.getUserName());
             newUser.setFullName(req.getFullName());
-            newUser.setCompany(userExit.get().getCompany());
+            newUser.setCompany(company.get());
             newUser.setCreatedBy(req.getCreatingUserID());
+            newUser.setRoleType(req.getRoleType());
             newUser.setEmployeApproved(true);
-            userRepo.save(newUser);
+            var savedUser = userRepo.save(newUser);
+
+            var userTeam = team.get().getUsers();
+            userTeam.add(savedUser);
+            team.get().setUsers(userTeam);
+            teamRepo.save(team.get());
+            userRepo.save(savedUser);
+
+            // var userTeams = savedUser.getTeams();
+            // userTeams.add(team.get());
+            // savedUser.setTeams(userTeams);
+            // userRepo.save(savedUser);
+
         }
         return "Member Added";
     }
 
     @Override
-    public Object fetchTeamsAndMembers(UUID companyID, UUID userID) {
+    public Object fetchTeams(UUID companyID, UUID userID, UserRoleType roleType) {
         validationUserService.isUserValid(userID, companyID);
-        var companyExit = companyRepo.findById(companyID);
-        if (!companyExit.isPresent()) {
+        var userExit = userRepo.findById(userID);
+        if (!userExit.isPresent()) {
+            throw new RuntimeException("Company not found");
+        } else if (roleType == UserRoleType.ADMIN || roleType == UserRoleType.SUPERADMIN) {
+            return userExit.get().getCompany().getTeams();
+        } else {
+            List<TeamsEntities> resp = new ArrayList<>();
+            for (var e : userExit.get().getCompany().getTeams()) {
+                for (var w : e.getUsers()) {
+                    if (w.getId().equals(userID)) {
+                        resp.add(e);
+                    }
+                }
+            }
+            return resp;
+        }
+    }
+
+    @Override
+    public Object fetchMembers(UUID companyID, UUID userID, UUID teamID) {
+        validationUserService.isUserValid(userID, companyID);
+        var foundTeam = teamRepo.findById(teamID);
+        if (!foundTeam.isPresent()) {
             throw new RuntimeException("Team not found");
         } else {
-            return companyExit.get().getTeams();
+            var data = new HashMap<>();
+            data.put("manager", foundTeam.get().getManager());
+            data.put("members", foundTeam.get().getUsers());
+            return data;
         }
     }
 

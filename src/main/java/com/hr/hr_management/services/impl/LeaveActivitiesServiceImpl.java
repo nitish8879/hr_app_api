@@ -34,7 +34,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         AppResponse response = new AppResponse();
         var user = userRepo.findById(req.getUserID());
         var approvalTo = userRepo.findById(req.getApprovalTo());
-        LeaveAcitivityEntities data = new LeaveAcitivityEntities(user.get(), approvalTo.get().getId());
+        LeaveAcitivityEntities data = new LeaveAcitivityEntities(LeaveStatus.PENDING,null,null,null,null,null,null);
         data.setUser(user.get());
         data.setApprovalTo(approvalTo.get().getId());
         data.setCompany(user.get().getCompany());
@@ -47,7 +47,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             if (userExit != null && userExit.isPresent()) {
                 var companyExit = companyRepo.findById(req.getCompanyID());
                 if (companyExit != null && companyExit.isPresent()) {
-                    userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() + 1);
+                    // userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() + 1);
                     userRepo.save(userExit.get());
 
                     var savedData = leaveRepo.save(data);
@@ -84,13 +84,13 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             leaveData.get().setLeaveStatus(req.getLeaveStatus());
             leaveData.get().setRejectedReason(req.getRejectReason());
             if (leaveData.get().getLeaveStatus() == LeaveStatus.APPROVED) {
-                userExit.get().setTotalLeaveApproved(userExit.get().getTotalLeaveApproved() + 1);
+                // userExit.get().setTotalLeaveApproved(userExit.get().getTotalLeaveApproved() + 1);
             } else {
-                userExit.get().setTotalLeaveCancelled(userExit.get().getTotalLeaveCancelled() + 1);
+                // userExit.get().setTotalLeaveCancelled(userExit.get().getTotalLeaveCancelled() + 1);
             }
-            if (userExit.get().getTotalLeavePending() > 0) {
-                userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() - 1);
-            }
+            // if (userExit.get().getTotalLeavePending() > 0) {
+            //     userExit.get().setTotalLeavePending(userExit.get().getTotalLeavePending() - 1);
+            // }
             var saveData = leaveRepo.save(leaveData.get());
             userRepo.save(userExit.get());
             response.setStatus(true);

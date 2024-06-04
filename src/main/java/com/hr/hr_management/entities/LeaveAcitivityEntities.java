@@ -26,7 +26,14 @@ public class LeaveAcitivityEntities {
     public LeaveAcitivityEntities() {
     }
 
-    public LeaveAcitivityEntities(UserEntities user, UUID approvalTo) {
+    public LeaveAcitivityEntities(LeaveStatus leaveStatus,
+            Date fromdate, Date toDate, String leaveReason, CompanyEntities company, UserEntities user,
+            UUID approvalTo) {
+        this.leaveStatus = leaveStatus;
+        this.fromdate = fromdate;
+        this.todate = toDate;
+        this.leaveReason = leaveReason;
+        this.company = company;
         this.user = user;
         this.approvalTo = approvalTo;
     }

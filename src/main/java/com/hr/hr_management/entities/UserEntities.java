@@ -45,6 +45,7 @@ public class UserEntities {
     @Column(unique = true, nullable = false)
     private String userName;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
@@ -61,18 +62,23 @@ public class UserEntities {
     @JsonIgnore
     private boolean employeApproved = false;
 
+    @JsonIgnore
     @Column(columnDefinition = "tinyint(1) default 0")
     private Integer totalLeaveBalance;
 
-    @Column(columnDefinition = "tinyint(1) default 0")
-    private Integer totalLeaveApproved;
+    // @JsonIgnore
+    // @Column(columnDefinition = "tinyint(1) default 0")
+    // private Integer totalLeaveApproved;
 
-    @Column(columnDefinition = "tinyint(1) default 0")
-    private Integer totalLeavePending;
+    // @JsonIgnore
+    // @Column(columnDefinition = "tinyint(1) default 0")
+    // private Integer totalLeavePending;
 
-    @Column(columnDefinition = "tinyint(1) default 0")
-    private Integer totalLeaveCancelled;
+    // @JsonIgnore
+    // @Column(columnDefinition = "tinyint(1) default 0")
+    // private Integer totalLeaveCancelled;
 
+    @JsonIgnore
     @Column(nullable = true)
     private String accountSuspendReason;
 
@@ -80,6 +86,7 @@ public class UserEntities {
     private Boolean firstTimeLogin = Boolean.TRUE;
 
     @Column(nullable = true)
+    @JsonIgnore
     private UUID createdBy;
 
     @JsonIgnore
@@ -87,10 +94,10 @@ public class UserEntities {
     @JoinColumn(name = "company_id")
     private CompanyEntities company;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "user_leave", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
-    private List<TeamsEntities> teams = new ArrayList<>();
+    // @JsonIgnore
+    // @ManyToMany
+    // @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+    // private List<TeamsEntities> teams = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")

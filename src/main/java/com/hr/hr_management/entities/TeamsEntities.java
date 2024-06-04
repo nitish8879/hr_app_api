@@ -27,8 +27,14 @@ public class TeamsEntities {
     public TeamsEntities() {
     }
 
+    public TeamsEntities(String teamName,CompanyEntities company,UserEntities manager,List<UserEntities> users) {
+        this.teamName = teamName;
+        this.company = company;
+        this.manager = manager;
+        this.users = users;
+    }
+
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "team_id")
     private UUID id;
@@ -36,7 +42,7 @@ public class TeamsEntities {
     @CreationTimestamp
     private Date createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String teamName;
 
     @JsonIgnore

@@ -20,9 +20,6 @@ public class LeaveActivityReq {
 
     private UUID approvalTo;
 
-    @NotBlank(message = "leaveStatus can't be empty")
-    private String leaveStatus;
-
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date fromdate;
 
