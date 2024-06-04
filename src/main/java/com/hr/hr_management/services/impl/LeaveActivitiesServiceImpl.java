@@ -54,20 +54,15 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
         var userExit = userRepo.findById(req.getEmployeeID());
         var leaveData = leaveRepo.findById(req.getLeaveID());
-        if (leaveData == null || !leaveData.isPresent()) {
+        if (!leaveData.isPresent()) {
             response.setStatus(false);
-            response.setErrorMsg("Leave Data not found by your ID");
-        } else if (leaveData.get().getApprovalTo() != req.getUserID()) {
+            response.setErrorMsg("Leave Data not found");
+        } else if (!leaveData.get().getApprovalTo().toString().equals(req.getUserID().toString())) {
             response.setStatus(false);
             response.setErrorMsg("You are not the right person to approve this.");
         } else {
             leaveData.get().setLeaveStatus(req.getLeaveStatus());
             leaveData.get().setRejectedReason(req.getRejectReason());
-            if (leaveData.get().getLeaveStatus() == LeaveStatus.APPROVED) {
-                // userExit.get().setTotalLeaveApproved(userExit.get().getTotalLeaveApproved() +
-                // 1);
-            } else {
-            }
             var saveData = leaveRepo.save(leaveData.get());
             userRepo.save(userExit.get());
             response.setStatus(true);
