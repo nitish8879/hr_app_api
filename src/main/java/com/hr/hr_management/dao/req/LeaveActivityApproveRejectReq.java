@@ -13,12 +13,16 @@ import lombok.Data;
 @AllArgsConstructor(staticName = "create")
 public class LeaveActivityApproveRejectReq {
 
+    @NotNull(message = "Leave ID can't be Null")
     private UUID leaveID;
 
+    @NotNull(message = "User ID can't be Null")
     private UUID userID;
 
+    @NotNull(message = "Employee ID can't be Null")
     private UUID employeeID;
 
+    @NotNull(message = "Company ID can't be Null")
     private UUID companyID;
 
     @NotNull(message = "Leave status can't be null")

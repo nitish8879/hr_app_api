@@ -100,11 +100,17 @@ public class UserEntities {
 
     // @JsonIgnore
     // @ManyToMany
-    // @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+    // @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"),
+    // inverseJoinColumns = @JoinColumn(name = "team_id"))
     // private List<TeamsEntities> teams = new ArrayList<>();
 
+    // @JsonIgnore
+    // @OneToMany(mappedBy = "user")
+    // private List<LeaveAcitivityEntities> userLeaves = new ArrayList<>();
+
     @JsonIgnore
-    @OneToMany(mappedBy = "user")
+    @OneToMany
+    @JoinTable(name = "user_leave", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "leave_id"))
     private List<LeaveAcitivityEntities> userLeaves = new ArrayList<>();
 
     @JsonIgnore

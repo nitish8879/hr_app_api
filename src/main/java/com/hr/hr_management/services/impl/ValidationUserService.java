@@ -19,7 +19,7 @@ public class ValidationUserService {
 
     public void isUserValid(UUID userID, UUID companyID) {
         var userExit = userRepo.findById(userID);
-        if (userExit != null && userExit.isPresent()) {
+        if (userExit.isPresent()) {
             if (userExit.get().isEmployeApproved()) {
                 var compnayExit = companyRepo.findById(companyID);
                 if (compnayExit != null && compnayExit.isPresent()) {
@@ -35,7 +35,7 @@ public class ValidationUserService {
                 throw new RuntimeException("Your account is not active");
             }
         } else {
-            throw new RuntimeException("UserNot exit in db");
+            throw new RuntimeException("User Not exit in db");
         }
     }
 }

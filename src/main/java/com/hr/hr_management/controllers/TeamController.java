@@ -41,8 +41,8 @@ public class TeamController {
     }
 
     @GetMapping("/fetchAllAdminManagerByCompany")
-    public ResponseEntity<?> fetchAllAdminManagerByCompany(@RequestParam("companyID") UUID companyID) {
-        return ResponseEntity.ok(teamsService.fetchAllAdminManagerByCompany(companyID));
+    public ResponseEntity<?> fetchAllAdminManagerByCompany(@RequestParam("companyID") UUID companyID,@RequestParam("userId")UUID userId) {
+        return ResponseEntity.ok(teamsService.fetchAllAdminManagerByCompany(companyID,userId));
     }
 
     @GetMapping("/fetchMembers")

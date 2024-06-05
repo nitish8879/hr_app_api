@@ -19,6 +19,6 @@ public interface TeamsService {
 
     public Object fetchMembers(UUID companyID, UUID userID, UUID teamID);
 
-    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId);
+    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId,UUID userId);
 
 }

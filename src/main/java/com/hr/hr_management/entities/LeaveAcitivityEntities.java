@@ -71,7 +71,7 @@ public class LeaveAcitivityEntities {
     @JoinColumn(name = "company_id", nullable = false)
     private CompanyEntities company;
 
-    @JsonIgnore
+    // @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntities user;

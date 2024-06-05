@@ -48,6 +48,11 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         var savedData = leaveRepo.save(data);
         response.setStatus(true);
         response.setData(savedData);
+
+        var userLeaves = user.get().getUserLeaves();
+        userLeaves.add(savedData);
+        user.get().setUserLeaves(userLeaves);
+        userRepo.save(user.get());
         return response;
     }
 
@@ -55,7 +60,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     public AppResponse approveOrRejectLeave(LeaveActivityApproveRejectReq req) {
         AppResponse response = new AppResponse();
         validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
-        var userExit = userRepo.findById(req.getEmployeeID());
+        validationUserService.isUserValid(req.getEmployeeID(), req.getCompanyID());
         var leaveData = leaveRepo.findById(req.getLeaveID());
         if (!leaveData.isPresent()) {
             response.setStatus(false);
@@ -67,7 +72,6 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             leaveData.get().setLeaveStatus(req.getLeaveStatus());
             leaveData.get().setRejectedReason(req.getRejectReason());
             var saveData = leaveRepo.save(leaveData.get());
-            userRepo.save(userExit.get());
             response.setStatus(true);
             response.setData(saveData);
         }
@@ -79,7 +83,8 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     public AppResponse getAllLeaves(UUID userID, UUID companyID, UserRoleType roleType, Boolean myLeave) {
         AppResponse response = new AppResponse();
         validationUserService.isUserValid(userID, companyID);
-        if ((roleType == UserRoleType.ADMIN || roleType == UserRoleType.SUPERADMIN || roleType == UserRoleType.MANAGER) && !myLeave) {
+        if ((roleType == UserRoleType.ADMIN || roleType == UserRoleType.SUPERADMIN || roleType == UserRoleType.MANAGER)
+                && !myLeave) {
             var company = companyRepo.findById(companyID);
             response.setData(company.get().getAllLeaves());
         } else {

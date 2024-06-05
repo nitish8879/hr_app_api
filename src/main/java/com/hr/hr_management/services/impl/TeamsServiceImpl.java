@@ -43,14 +43,18 @@ public class TeamsServiceImpl implements TeamsService {
     }
 
     @Override
-    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId) {
+    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId,UUID userId) {
+        validationUserService.isUserValid(userId, companyId);
         var company = companyRepo.findById(companyId);
         List<UserEntities> user = new ArrayList<>();
         if (!company.isPresent()) {
             throw new RuntimeException("Company not Found");
         } else {
-            for (var e : company.get().getTeams()) {
-                user.add(e.getManager());
+            for (var e : company.get().getUsers()) {
+                if ((e.getRoleType() == UserRoleType.ADMIN || e.getRoleType() == UserRoleType.SUPERADMIN
+                        || e.getRoleType() == UserRoleType.MANAGER) && !e.getId().toString().equals(userId.toString())) {
+                            user.add(e);
+                }
             }
             return user;
         }
