@@ -65,7 +65,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         if (!leaveData.isPresent()) {
             response.setStatus(false);
             response.setErrorMsg("Leave Data not found");
-        } else if (!leaveData.get().getApprovalTo().toString().equals(req.getUserID().toString())) {
+        } else if (!leaveData.get().getApprovalTo().getId().toString().equals(req.getUserID().toString())) {
             response.setStatus(false);
             response.setErrorMsg("You are not the right person to approve this.");
         } else {
@@ -86,7 +86,13 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         if ((roleType == UserRoleType.ADMIN || roleType == UserRoleType.SUPERADMIN || roleType == UserRoleType.MANAGER)
                 && !myLeave) {
             var company = companyRepo.findById(companyID);
-            response.setData(company.get().getAllLeaves());
+            if (roleType == UserRoleType.MANAGER) {
+                for (int i = 0; i < company.get().getAllLeaves().size(); i++) {
+                    
+                }
+            } else {
+                response.setData(company.get().getAllLeaves());
+            }
         } else {
             var userExit = userRepo.findById(userID);
             var map = new HashMap<>();
