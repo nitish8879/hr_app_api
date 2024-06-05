@@ -35,19 +35,26 @@ public class TeamsServiceImpl implements TeamsService {
 
     @Override
     public String createTeam(CreateTeamReq req) {
-
         validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
-
-        var userExit = userRepo.findById(req.getUserID());
-
-        List<UserEntities> members = new ArrayList<UserEntities>();
-        members.add(userExit.get());
-        TeamsEntities teamsEntities = new TeamsEntities(req.getTeamName(),
-                userExit.get().getCompany(), members.get(0), members);
-
+        var company = companyRepo.findById(req.getCompanyID());
+        TeamsEntities teamsEntities = new TeamsEntities(req.getTeamName(), company.get());
         teamRepo.save(teamsEntities);
-
         return "Team Created";
+    }
+
+    @Override
+    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId) {
+        var company = companyRepo.findById(companyId);
+        List<UserEntities> user = new ArrayList<>();
+        if (!company.isPresent()) {
+            throw new RuntimeException("Company not Found");
+        } else {
+            for (var e : company.get().getTeams()) {
+                user.add(e.getManager());
+            }
+            return user;
+        }
+
     }
 
     @Override
@@ -73,6 +80,9 @@ public class TeamsServiceImpl implements TeamsService {
             newUser.setEmployeApproved(true);
             var savedUser = userRepo.save(newUser);
 
+            if (req.getRoleType() == UserRoleType.ADMIN || req.getRoleType() == UserRoleType.MANAGER) {
+                team.get().setManager(newUser);
+            }
             var userTeam = team.get().getUsers();
             userTeam.add(savedUser);
             team.get().setUsers(userTeam);

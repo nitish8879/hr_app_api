@@ -10,18 +10,21 @@ import lombok.Data;
 @Data
 public class MemberAddReq {
 
+    @NotNull(message = "Creating User ID can't be Null")
     private UUID creatingUserID;
 
-    @NotNull(message = "Full name cannot be blank")
-    private String fullName;
-
+    @NotNull(message = "Team ID cannot be Null")
     private UUID teamID;
 
-    @NotNull(message = "Username cannot be blank")
-    private String userName;
-
-    @NotNull(message = "Company ID cannot be null")
+    @NotNull(message = "Company ID cannot be Null")
     private UUID companyID;
 
+    @NotNull(message = "Full name cannot be Null")
+    private String fullName;
+
+    @NotNull(message = "Username cannot be Null")
+    private String userName;
+
+    @NotNull(message = "Roletype cannot be Null")
     private UserRoleType roleType;
 }

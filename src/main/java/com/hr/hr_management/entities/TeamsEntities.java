@@ -27,11 +27,9 @@ public class TeamsEntities {
     public TeamsEntities() {
     }
 
-    public TeamsEntities(String teamName,CompanyEntities company,UserEntities manager,List<UserEntities> users) {
+    public TeamsEntities(String teamName,CompanyEntities company) {
         this.teamName = teamName;
         this.company = company;
-        this.manager = manager;
-        this.users = users;
     }
 
     @Id
@@ -42,7 +40,7 @@ public class TeamsEntities {
     @CreationTimestamp
     private Date createdAt;
 
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false, unique = true)
     private String teamName;
 
     @JsonIgnore
@@ -52,7 +50,7 @@ public class TeamsEntities {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserEntities manager;
 
     @JsonIgnore
