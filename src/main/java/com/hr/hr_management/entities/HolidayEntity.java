@@ -17,6 +17,7 @@ import lombok.Data;
 @Entity
 @Data
 public class HolidayEntity {
+    public HolidayEntity(){}
 
     public HolidayEntity(CompanyEntities company, Date holidayDate, String label) {
         this.company = company;

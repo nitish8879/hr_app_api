@@ -1,7 +1,9 @@
 package com.hr.hr_management.services.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,9 +17,14 @@ import com.hr.hr_management.dao.resp.UserSigninOrSingupRes;
 import com.hr.hr_management.entities.CompanyEntities;
 import com.hr.hr_management.entities.UserEntities;
 import com.hr.hr_management.repo.CompanyRepo;
+import com.hr.hr_management.repo.LeaveActivityRepo;
+import com.hr.hr_management.repo.UserActivitiesRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.UserService;
 import com.hr.hr_management.utils.enums.EmployeeApprovalStatus;
+import com.hr.hr_management.utils.enums.LeaveStatus;
+import com.hr.hr_management.utils.enums.LeaveType;
+import com.hr.hr_management.utils.enums.UserActivitiesType;
 import com.hr.hr_management.utils.models.AppResponse;
 
 @Service
@@ -26,6 +33,12 @@ public class UserServiceImp implements UserService {
     UserRepo userRepo;
     @Autowired
     CompanyRepo companyRepo;
+
+    @Autowired
+    UserActivitiesRepo activitiesRepo;
+
+    @Autowired
+    LeaveActivityRepo leaveActivityRepo;
 
     @Autowired
     ValidationUserService validationUserService;
@@ -170,32 +183,6 @@ public class UserServiceImp implements UserService {
         return response;
     }
 
-    // private void setUserLeave(Integer userID, Integer companyID) throws Exception
-    // {
-    // var userExit = userRepo.findById(userID);
-    // if (userExit != null && userExit.isPresent()) {
-    // var companyExit = companyRepo.findById(companyID);
-    // if (companyExit != null && companyExit.isPresent()) {
-    // var totalLeave = new HashMap<>();
-    // List<LeaveAcitivityEntities> userLeaveActivityList =
-    // leaveActivityRepo.findByUserID(userID);
-    // for (LeaveAcitivityEntities leaveAcitivityEntities : userLeaveActivityList) {
-    // if (leaveAcitivityEntities.getLeaveStatus() == LeaveStatus.APPROVED) {
-    // }
-    // }
-    // totalLeave.put("totalLeaveBalance", userExit.get().getTotalLeaveBalance());
-    // totalLeave.put("totalLeaveApproved", userExit.get().getTotalLeaveApproved());
-    // totalLeave.put("totalLeavePending", userExit.get().getTotalLeavePending());
-    // totalLeave.put("totalLeaveCancelled",
-    // userExit.get().getTotalLeaveCancelled());
-    // } else {
-    // throw new Exception("Company not found");
-    // }
-    // } else {
-    // throw new Exception("User not found");
-    // }
-    // }
-
     @Override
     public AppResponse getUserTotalLeave(UUID userID, UUID companyID) {
         AppResponse response = new AppResponse();
@@ -234,6 +221,54 @@ public class UserServiceImp implements UserService {
             response.setErrorMsg("User Not Found.");
         }
         return response;
+    }
+
+    @Override
+    public Object homeAnalyticsData(UUID userID, UUID companyID) {
+        validationUserService.isUserValid(userID, companyID);
+        var map = new HashMap<>();
+        var now = LocalDate.now();
+        var todayDate = LocalDate.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
+        var foundCompany = companyRepo.findById(companyID);
+        // leave or wfh
+        List<UserEntities> wfh = new ArrayList<>();
+        List<UserEntities> leaveUsers = new ArrayList<>();
+        List<UserEntities> userLoggedIn = new ArrayList<>();
+        List<UserEntities> userLoggedOut = new ArrayList<>();
+        List<UserEntities> userBreakIn = new ArrayList<>();
+
+        var allleaves = leaveActivityRepo.findByCompany_IdAndApplyDate(companyID, todayDate);
+        for (int i = 0; i < allleaves.size(); i++) {
+            if (allleaves.get(i).getLeaveStatus() == LeaveStatus.APPROVED) {
+                if (allleaves.get(i).getLeaveType() == LeaveType.WFH) {
+                    wfh.add(allleaves.get(i).getUser());
+                } else {
+                    leaveUsers.add(allleaves.get(i).getUser());
+                }
+            }
+        }
+
+        var usersActvities = activitiesRepo.findByCompany_IdAndCreatedAt(companyID, todayDate);
+        for (int i = 0; i < usersActvities.size(); i++) {
+            if (usersActvities.get(i).getInTime() != null) {
+                userLoggedIn.add(usersActvities.get(i).getUser());
+            }
+
+            if (usersActvities.get(i).getOutTime() != null) {
+                userLoggedOut.add(usersActvities.get(i).getUser());
+            }
+
+            if (usersActvities.get(i).getExceptedType() == UserActivitiesType.BREAKOUT) {
+                userBreakIn.add(usersActvities.get(i).getUser());
+            }
+        }
+        map.put("wfh", wfh);
+        map.put("leaveUsers", leaveUsers);
+        map.put("totalUsersCount", foundCompany.get().getUsers().size());
+        map.put("userBreakIn", userBreakIn);
+        map.put("userLoggedOut", userLoggedOut);
+        map.put("userLoggedIn", userLoggedIn);
+        return map;
     }
 
 }

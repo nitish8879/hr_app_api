@@ -3,6 +3,8 @@ package com.hr.hr_management.dao.req;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -18,5 +20,6 @@ public class CreateHolidayReq {
     private String label;
 
     @NotNull(message = "Date ID can't be null")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 }

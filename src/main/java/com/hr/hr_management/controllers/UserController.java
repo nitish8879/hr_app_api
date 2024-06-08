@@ -1,6 +1,7 @@
 package com.hr.hr_management.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,11 @@ public class UserController {
     @GetMapping("/getTotalLeave")
     public AppResponse getTotalLeave(@PathVariable("userID") UUID userID, @PathVariable("companyID") UUID companyID) {
         return userService.getUserTotalLeave(userID, companyID);
+    }
+
+    @GetMapping("/homeAnalyticsData")
+    public ResponseEntity<?> homeAnalyticsData(@RequestParam("userID") UUID userID, @RequestParam("companyID") UUID companyID) {
+        return ResponseEntity.ok(userService.homeAnalyticsData(userID, companyID));
     }
 
     @GetMapping("/updatePassword")

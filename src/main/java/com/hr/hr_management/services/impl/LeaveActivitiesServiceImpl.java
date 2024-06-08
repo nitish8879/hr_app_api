@@ -44,7 +44,8 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
                 req.getLeaveReason(),
                 user.get().getCompany(),
                 user.get(),
-                userRepo.findById(req.getApprovalTo()).get());
+                userRepo.findById(req.getApprovalTo()).get(),
+                req.getLeaveType());
         var savedData = leaveRepo.save(data);
         response.setStatus(true);
         response.setData(savedData);

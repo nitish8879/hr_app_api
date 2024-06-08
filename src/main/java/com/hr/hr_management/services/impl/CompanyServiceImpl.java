@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.hr.hr_management.dao.req.CompanyUpdateReq;
 import com.hr.hr_management.dao.req.CreateHolidayReq;
+import com.hr.hr_management.dao.req.DeleteHolidayReq;
 import com.hr.hr_management.entities.HolidayEntity;
 import com.hr.hr_management.repo.CompanyRepo;
+import com.hr.hr_management.repo.HolidayRepo;
 import com.hr.hr_management.services.CompanyService;
 import com.hr.hr_management.utils.models.AppResponse;
 
@@ -19,6 +21,9 @@ public class CompanyServiceImpl implements CompanyService {
     CompanyRepo companyRepo;
     @Autowired
     ValidationUserService validationUserService;
+
+    @Autowired
+    HolidayRepo holidayRepo;
 
     @Override
     public AppResponse updateCompany(CompanyUpdateReq req) {
@@ -49,10 +54,28 @@ public class CompanyServiceImpl implements CompanyService {
         validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
         var company = companyRepo.findById(req.getCompanyID());
         HolidayEntity newHoliday = new HolidayEntity(company.get(), req.getDate(), req.getLabel());
+        var savedHoliday = holidayRepo.save(newHoliday);
         var allHolidays = company.get().getHolidays();
-        allHolidays.add(newHoliday);
+        allHolidays.add(savedHoliday);
         company.get().setHolidays(allHolidays);
         response.setData(companyRepo.save(company.get()));
+        response.setStatus(true);
+        return response;
+    }
+
+    @Override
+    public AppResponse deleteHoliday(DeleteHolidayReq req) {
+        validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
+        AppResponse response = new AppResponse();
+        var foundHoliday = holidayRepo.findById(req.getHolidayID());
+        if (!foundHoliday.isPresent()) {
+            response.setStatus(false);
+            response.setErrorMsg("Holiday not found");
+        } else {
+            holidayRepo.deleteById(req.getHolidayID());
+            response.setStatus(true);
+        }
+
         return response;
     }
 

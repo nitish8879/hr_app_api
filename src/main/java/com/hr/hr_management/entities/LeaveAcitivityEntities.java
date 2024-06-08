@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hr.hr_management.utils.enums.LeaveStatus;
+import com.hr.hr_management.utils.enums.LeaveType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +29,7 @@ public class LeaveAcitivityEntities {
 
     public LeaveAcitivityEntities(LeaveStatus leaveStatus,
             Date fromdate, Date toDate, String leaveReason, CompanyEntities company, UserEntities user,
-            UserEntities approvalTo) {
+            UserEntities approvalTo,LeaveType leaveType) {
         this.leaveStatus = leaveStatus;
         this.fromdate = fromdate;
         this.todate = toDate;
@@ -36,6 +37,7 @@ public class LeaveAcitivityEntities {
         this.company = company;
         this.user = user;
         this.approvalTo = approvalTo;
+        this.leaveType = leaveType;
     }
 
     @Id
@@ -49,6 +51,10 @@ public class LeaveAcitivityEntities {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private LeaveStatus leaveStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LeaveType leaveType;
 
     @Column(nullable = false)
     private Date fromdate;

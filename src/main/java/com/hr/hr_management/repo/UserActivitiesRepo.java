@@ -1,6 +1,7 @@
 package com.hr.hr_management.repo;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,7 +18,6 @@ public interface UserActivitiesRepo extends JpaRepository<UserActivityEntities, 
     Optional<UserActivityEntities> findByUserAndCompanyAndCreatedAt(UserEntities user, CompanyEntities company,
             LocalDate createdAt);
 
-    // public Optional<UserActivityEntities>
-    // findByUser_IDAndCompany_IDAndCreatedAt(UUID userID, UUID companyID,
-    // LocalDate createdAt);
+    List<UserActivityEntities> findByCompany_IdAndCreatedAt(UUID companyId, LocalDate createdAt);
+
 }

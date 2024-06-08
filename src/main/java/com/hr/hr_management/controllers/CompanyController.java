@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hr.hr_management.dao.req.CompanyUpdateReq;
 import com.hr.hr_management.dao.req.CreateHolidayReq;
+import com.hr.hr_management.dao.req.DeleteHolidayReq;
 import com.hr.hr_management.entities.HolidayEntity;
 import com.hr.hr_management.services.CompanyService;
 import com.hr.hr_management.utils.models.AppResponse;
@@ -39,6 +40,11 @@ public class CompanyController {
     @PostMapping("/updateCompany")
     public ResponseEntity<?> updateCompany(@RequestBody @Valid CompanyUpdateReq req) {
         return ResponseEntity.ok(companyService.updateCompany(req));
+    }
+
+    @PostMapping("/deleteHoliday")
+    public ResponseEntity<?> deleteHoliday(@RequestBody @Valid DeleteHolidayReq req) {
+        return ResponseEntity.ok(companyService.deleteHoliday(req));
     }
 
 }

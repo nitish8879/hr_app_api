@@ -18,5 +18,7 @@ public interface UserService {
 
     public AppResponse getUserTotalLeave(UUID userID, UUID companyID);
 
-    public AppResponse updatePassword(String userName,String oldpassword,String newPasswod);
+    public AppResponse updatePassword(String userName, String oldpassword, String newPasswod);
+
+    public Object homeAnalyticsData(UUID userID, UUID companyID);
 }

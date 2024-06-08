@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.hr.hr_management.dao.req.CompanyUpdateReq;
 import com.hr.hr_management.dao.req.CreateHolidayReq;
+import com.hr.hr_management.dao.req.DeleteHolidayReq;
 import com.hr.hr_management.entities.HolidayEntity;
 import com.hr.hr_management.utils.models.AppResponse;
 
@@ -15,4 +16,6 @@ public interface CompanyService {
     List<HolidayEntity> getAllHoliday(UUID compnayID);
 
     AppResponse updateCompany(CompanyUpdateReq req);
+
+    AppResponse deleteHoliday(DeleteHolidayReq req);
 }

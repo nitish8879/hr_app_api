@@ -4,8 +4,10 @@ import java.sql.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hr.hr_management.utils.enums.LeaveType;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,5 +30,8 @@ public class LeaveActivityReq {
 
     @NotBlank(message = "leaveReason can't be empty")
     private String leaveReason;
+
+    @NotNull(message = "Leave Type can't be empty")
+    private LeaveType leaveType;
 
 }
