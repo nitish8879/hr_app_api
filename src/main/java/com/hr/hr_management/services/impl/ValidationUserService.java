@@ -12,10 +12,10 @@ import com.hr.hr_management.repo.UserRepo;
 public class ValidationUserService {
 
     @Autowired
-    private UserRepo userRepo;
+    UserRepo userRepo;
 
     @Autowired
-    private CompanyRepo companyRepo;
+    CompanyRepo companyRepo;
 
     public void isUserValid(UUID userID, UUID companyID) {
         var userExit = userRepo.findById(userID);

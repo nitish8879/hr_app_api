@@ -23,12 +23,12 @@ import com.hr.hr_management.utils.models.AppResponse;
 @Service
 public class UserServiceImp implements UserService {
     @Autowired
-    private UserRepo userRepo;
+    UserRepo userRepo;
     @Autowired
-    private CompanyRepo companyRepo;
+    CompanyRepo companyRepo;
 
     @Autowired
-    private ValidationUserService validationUserService;
+    ValidationUserService validationUserService;
 
     @Override
     public AppResponse signin(UserSigninReq req) {
@@ -208,7 +208,8 @@ public class UserServiceImp implements UserService {
                 // totalLeave.put("totalLeaveBalance", userExit.get().getTotalLeaveBalance());
                 // totalLeave.put("totalLeaveApproved", userExit.get().getTotalLeaveApproved());
                 // totalLeave.put("totalLeavePending", userExit.get().getTotalLeavePending());
-                // totalLeave.put("totalLeaveCancelled", userExit.get().getTotalLeaveCancelled());
+                // totalLeave.put("totalLeaveCancelled",
+                // userExit.get().getTotalLeaveCancelled());
                 response.setStatus(true);
                 response.setData(totalLeave);
             } else {

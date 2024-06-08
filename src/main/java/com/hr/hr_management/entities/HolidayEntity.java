@@ -18,8 +18,10 @@ import lombok.Data;
 @Data
 public class HolidayEntity {
 
-    public HolidayEntity(CompanyEntities company) {
+    public HolidayEntity(CompanyEntities company, Date holidayDate, String label) {
         this.company = company;
+        this.holidayDate = holidayDate;
+        this.label = label;
     }
 
     @Id

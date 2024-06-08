@@ -22,13 +22,13 @@ import com.hr.hr_management.utils.enums.UserRoleType;
 public class TeamsServiceImpl implements TeamsService {
 
     @Autowired
-    private TeamRepo teamRepo;
+    TeamRepo teamRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    UserRepo userRepo;
 
     @Autowired
-    private CompanyRepo companyRepo;
+    CompanyRepo companyRepo;
 
     @Autowired
     ValidationUserService validationUserService;
@@ -43,7 +43,7 @@ public class TeamsServiceImpl implements TeamsService {
     }
 
     @Override
-    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId,UUID userId) {
+    public List<UserEntities> fetchAllAdminManagerByCompany(UUID companyId, UUID userId) {
         validationUserService.isUserValid(userId, companyId);
         var company = companyRepo.findById(companyId);
         List<UserEntities> user = new ArrayList<>();
@@ -52,8 +52,9 @@ public class TeamsServiceImpl implements TeamsService {
         } else {
             for (var e : company.get().getUsers()) {
                 if ((e.getRoleType() == UserRoleType.ADMIN || e.getRoleType() == UserRoleType.SUPERADMIN
-                        || e.getRoleType() == UserRoleType.MANAGER) && !e.getId().toString().equals(userId.toString())) {
-                            user.add(e);
+                        || e.getRoleType() == UserRoleType.MANAGER)
+                        && !e.getId().toString().equals(userId.toString())) {
+                    user.add(e);
                 }
             }
             return user;

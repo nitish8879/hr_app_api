@@ -15,19 +15,18 @@ import com.hr.hr_management.repo.UserActivitiesRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.UserActivitiesService;
 import com.hr.hr_management.utils.enums.UserActivitiesType;
-import com.hr.hr_management.utils.enums.UserRoleType;
 import com.hr.hr_management.utils.models.AppResponse;
 
 @Service
 public class UserActivitiesImpl implements UserActivitiesService {
     @Autowired
-    private UserActivitiesRepo userActivitiesRepo;
+    UserActivitiesRepo userActivitiesRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    UserRepo userRepo;
 
     @Autowired
-    private ValidationUserService validationUserService;
+    ValidationUserService validationUserService;
 
     @Override
     public AppResponse dailyInOut(UserActivityReq req) {

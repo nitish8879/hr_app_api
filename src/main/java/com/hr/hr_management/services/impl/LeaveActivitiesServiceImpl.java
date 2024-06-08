@@ -20,15 +20,15 @@ import com.hr.hr_management.utils.models.AppResponse;
 @Service
 public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
     @Autowired
-    private LeaveActivityRepo leaveRepo;
+    LeaveActivityRepo leaveRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    UserRepo userRepo;
     @Autowired
-    private CompanyRepo companyRepo;
+    CompanyRepo companyRepo;
 
     @Autowired
-    private ValidationUserService validationUserService;
+    ValidationUserService validationUserService;
 
     @Override
     public AppResponse applyLeave(LeaveActivityReq req) {
@@ -88,7 +88,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             var company = companyRepo.findById(companyID);
             if (roleType == UserRoleType.MANAGER) {
                 for (int i = 0; i < company.get().getAllLeaves().size(); i++) {
-                    
+
                 }
             } else {
                 response.setData(company.get().getAllLeaves());

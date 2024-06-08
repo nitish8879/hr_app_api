@@ -1,12 +1,13 @@
 package com.hr.hr_management.services.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hr.hr_management.dao.req.CompanyUpdateReq;
+import com.hr.hr_management.dao.req.CreateHolidayReq;
 import com.hr.hr_management.entities.HolidayEntity;
 import com.hr.hr_management.repo.CompanyRepo;
 import com.hr.hr_management.services.CompanyService;
@@ -15,28 +16,43 @@ import com.hr.hr_management.utils.models.AppResponse;
 @Service
 public class CompanyServiceImpl implements CompanyService {
     @Autowired
-    private CompanyRepo companyRepo;
+    CompanyRepo companyRepo;
+    @Autowired
+    ValidationUserService validationUserService;
 
     @Override
-    public AppResponse createHoliday(UUID compnayID, String label, Date date) {
+    public AppResponse updateCompany(CompanyUpdateReq req) {
         AppResponse response = new AppResponse();
-        var company = companyRepo.findById(compnayID);
-        if (company.isPresent()) {
-            HolidayEntity newHoliday = new HolidayEntity(company.get());
-            newHoliday.setHolidayDate(date);
-            newHoliday.setLabel(label);
-            var allHolidays = company.get().getHolidays();
-            allHolidays.add(newHoliday);
-            company.get().setHolidays(allHolidays);
-            try {
-                response.setData(companyRepo.save(company.get()));
-                response.setStatus(true);
-            } catch (Exception e) {
-                response.setErrorMsg(e.getMessage());
-            }
-        } else {
+        validationUserService.isUserValid(req.getUserId(), req.getCompanyID());
+        var companyExit = companyRepo.findById(req.getCompanyID());
+        if (!companyExit.isPresent()) {
+            response.setStatus(false);
             response.setErrorMsg("Company not found");
+        } else if (!companyExit.get().getAdmin().getId().toString().equals(req.getUserId().toString())) {
+            response.setStatus(false);
+            response.setErrorMsg("You are not right person to update this");
+        } else {
+            companyExit.get().setCompanyName(req.getCompanyName());
+            companyExit.get().setWorkingDays(req.getWorkingDays());
+            companyExit.get().setInTime(req.getInTime());
+            companyExit.get().setOutTime(req.getOutTime());
+            var saveData = companyRepo.save(companyExit.get());
+            response.setStatus(true);
+            response.setData(saveData);
         }
+        return response;
+    }
+
+    @Override
+    public AppResponse createHoliday(CreateHolidayReq req) {
+        AppResponse response = new AppResponse();
+        validationUserService.isUserValid(req.getUserID(), req.getCompanyID());
+        var company = companyRepo.findById(req.getCompanyID());
+        HolidayEntity newHoliday = new HolidayEntity(company.get(), req.getDate(), req.getLabel());
+        var allHolidays = company.get().getHolidays();
+        allHolidays.add(newHoliday);
+        company.get().setHolidays(allHolidays);
+        response.setData(companyRepo.save(company.get()));
         return response;
     }
 
