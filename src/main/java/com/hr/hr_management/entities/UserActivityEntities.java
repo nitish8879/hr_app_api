@@ -9,10 +9,13 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hr.hr_management.utils.TimeListConverter;
+import com.hr.hr_management.utils.enums.UserActivitiesType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,6 +54,9 @@ public class UserActivityEntities {
 
     @Column(nullable = true)
     private Time outTime;
+
+    @Enumerated(EnumType.STRING)
+    private UserActivitiesType exceptedType = UserActivitiesType.BREAKIN;
 
     @CreationTimestamp
     @Column(updatable = false)

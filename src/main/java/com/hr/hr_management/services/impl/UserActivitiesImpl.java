@@ -15,6 +15,7 @@ import com.hr.hr_management.repo.UserActivitiesRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.UserActivitiesService;
 import com.hr.hr_management.utils.enums.UserActivitiesType;
+import com.hr.hr_management.utils.enums.UserRoleType;
 import com.hr.hr_management.utils.models.AppResponse;
 
 @Service
@@ -43,22 +44,30 @@ public class UserActivitiesImpl implements UserActivitiesService {
             response.setData(saveUserEntities);
         } else {
             var recordExit = userActivitiesRepo.findById(req.getActivityID());
+
             if (recordExit.isPresent()) {
                 if (recordExit.get().getUser().getId() != userExit.get().getId()) {
                     response.setStatus(false);
                     response.setErrorMsg("You are not the right person to update this data");
-                } else if (req.getActivityType() == UserActivitiesType.IN.name()) {
+                } else if ((req.getActivityType() == UserActivitiesType.BREAKIN
+                        || req.getActivityType() == UserActivitiesType.BREAKOUT)
+                        && (recordExit.get().getExceptedType() != req.getActivityType())) {
+                    response.setStatus(false);
+                    response.setErrorMsg("Excepted Type " + recordExit.get().getExceptedType());
+                } else if (req.getActivityType() == UserActivitiesType.IN) {
                     recordExit.get().setInTime(req.getInTime());
-                } else if ((req.getActivityType().equals(UserActivitiesType.BREAKIN.name()))) {
+                } else if ((req.getActivityType() == UserActivitiesType.BREAKIN)) {
                     if (recordExit.get().getBreakInTimes() == null) {
                         recordExit.get().setBreakInTimes(new ArrayList<>());
                     }
                     recordExit.get().getBreakInTimes().add(req.getBreakInTime());
-                } else if ((req.getActivityType().equals(UserActivitiesType.BREAKOUT.name()))) {
+                    recordExit.get().setExceptedType(UserActivitiesType.BREAKOUT);
+                } else if ((req.getActivityType() == UserActivitiesType.BREAKOUT)) {
                     if (recordExit.get().getBreakOutTimes() == null) {
                         recordExit.get().setBreakOutTimes(new ArrayList<>());
                     }
                     recordExit.get().getBreakOutTimes().add(req.getBreakOutTime());
+                    recordExit.get().setExceptedType(UserActivitiesType.BREAKIN);
                 } else {
                     recordExit.get().setOutTime(req.getOutTime());
                 }
