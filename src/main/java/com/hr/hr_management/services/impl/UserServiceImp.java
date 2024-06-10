@@ -272,13 +272,6 @@ public class UserServiceImp implements UserService {
         resp.setUsersLoggedOut(userLoggedOut);
         resp.setUsersLoggedIn(userLoggedIn);
         resp.setUserOnBreak(userBreakIn);
-        // loggedInUsers.put("userLogged", userLoggedIn);
-        // map.put("wfh", wfh);
-        // map.put("leaveUsers", leaveUsers);
-        // map.put("totalUsersCount", foundCompany.get().getUsers().size());
-        // map.put("userBreakIn", userBreakIn);
-        // map.put("userLoggedOut", userLoggedOut);
-        // map.put("userLoggedIn", userLoggedIn);
 
         return resp;
     }
