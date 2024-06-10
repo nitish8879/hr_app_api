@@ -87,13 +87,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         if ((roleType == UserRoleType.ADMIN || roleType == UserRoleType.SUPERADMIN || roleType == UserRoleType.MANAGER)
                 && !myLeave) {
             var company = companyRepo.findById(companyID);
-            if (roleType == UserRoleType.MANAGER) {
-                for (int i = 0; i < company.get().getAllLeaves().size(); i++) {
-
-                }
-            } else {
-                response.setData(company.get().getAllLeaves());
-            }
+            response.setData(company.get().getAllLeaves());
         } else {
             var userExit = userRepo.findById(userID);
             var map = new HashMap<>();

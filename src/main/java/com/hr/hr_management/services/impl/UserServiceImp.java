@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.hr.hr_management.dao.req.ApproveOrRejectEmployeReq;
 import com.hr.hr_management.dao.req.UserSigninReq;
 import com.hr.hr_management.dao.req.UserSignupReq;
+import com.hr.hr_management.dao.resp.UserHomeAnalyticsDataRes;
+import com.hr.hr_management.dao.resp.UserHomeDetailsRes;
 import com.hr.hr_management.dao.resp.UserSigninOrSingupRes;
 import com.hr.hr_management.entities.CompanyEntities;
 import com.hr.hr_management.entities.UserEntities;
@@ -60,9 +62,6 @@ public class UserServiceImp implements UserService {
             userResp.setRoleType(userData.get().getRoleType().name());
 
             userResp.setTotalLeaveBalance(userData.get().getTotalLeaveBalance());
-            // userResp.setTotalLeaveApproved(userData.get().getTotalLeaveApproved());
-            // userResp.setTotalLeavePending(userData.get().getTotalLeavePending());
-            // userResp.setTotalLeaveCancelled(userData.get().getTotalLeaveCancelled());
 
             userResp.setCompanyName(userData.get().getCompany().getCompanyName());
             userResp.setWrokingDays(userData.get().getCompany().getWorkingDays());
@@ -226,16 +225,15 @@ public class UserServiceImp implements UserService {
     @Override
     public Object homeAnalyticsData(UUID userID, UUID companyID) {
         validationUserService.isUserValid(userID, companyID);
-        var map = new HashMap<>();
+        UserHomeAnalyticsDataRes resp = new UserHomeAnalyticsDataRes();
         var now = LocalDate.now();
         var todayDate = LocalDate.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth());
         var foundCompany = companyRepo.findById(companyID);
-        // leave or wfh
         List<UserEntities> wfh = new ArrayList<>();
         List<UserEntities> leaveUsers = new ArrayList<>();
-        List<UserEntities> userLoggedIn = new ArrayList<>();
-        List<UserEntities> userLoggedOut = new ArrayList<>();
-        List<UserEntities> userBreakIn = new ArrayList<>();
+        List<UserHomeDetailsRes> userLoggedIn = new ArrayList<>();
+        List<UserHomeDetailsRes> userLoggedOut = new ArrayList<>();
+        List<UserHomeDetailsRes> userBreakIn = new ArrayList<>();
 
         var allleaves = leaveActivityRepo.findByCompany_IdAndApplyDate(companyID, todayDate);
         for (int i = 0; i < allleaves.size(); i++) {
@@ -251,24 +249,38 @@ public class UserServiceImp implements UserService {
         var usersActvities = activitiesRepo.findByCompany_IdAndCreatedAt(companyID, todayDate);
         for (int i = 0; i < usersActvities.size(); i++) {
             if (usersActvities.get(i).getInTime() != null) {
-                userLoggedIn.add(usersActvities.get(i).getUser());
+                UserHomeDetailsRes user = new UserHomeDetailsRes(usersActvities.get(i).getInTime(),
+                        usersActvities.get(i).getUser());
+                userLoggedIn.add(user);
             }
 
             if (usersActvities.get(i).getOutTime() != null) {
-                userLoggedOut.add(usersActvities.get(i).getUser());
+                UserHomeDetailsRes user = new UserHomeDetailsRes(usersActvities.get(i).getInTime(),
+                        usersActvities.get(i).getUser());
+                userLoggedOut.add(user);
             }
 
             if (usersActvities.get(i).getExceptedType() == UserActivitiesType.BREAKOUT) {
-                userBreakIn.add(usersActvities.get(i).getUser());
+                UserHomeDetailsRes user = new UserHomeDetailsRes(usersActvities.get(i).getInTime(),
+                        usersActvities.get(i).getUser());
+                userBreakIn.add(user);
             }
         }
-        map.put("wfh", wfh);
-        map.put("leaveUsers", leaveUsers);
-        map.put("totalUsersCount", foundCompany.get().getUsers().size());
-        map.put("userBreakIn", userBreakIn);
-        map.put("userLoggedOut", userLoggedOut);
-        map.put("userLoggedIn", userLoggedIn);
-        return map;
+        resp.setWfh(wfh);
+        resp.setLeaveUsers(leaveUsers);
+        resp.setTotalUsersCount(foundCompany.get().getUsers().size());
+        resp.setUsersLoggedOut(userLoggedOut);
+        resp.setUsersLoggedIn(userLoggedIn);
+        resp.setUserOnBreak(userBreakIn);
+        // loggedInUsers.put("userLogged", userLoggedIn);
+        // map.put("wfh", wfh);
+        // map.put("leaveUsers", leaveUsers);
+        // map.put("totalUsersCount", foundCompany.get().getUsers().size());
+        // map.put("userBreakIn", userBreakIn);
+        // map.put("userLoggedOut", userLoggedOut);
+        // map.put("userLoggedIn", userLoggedIn);
+
+        return resp;
     }
 
 }
