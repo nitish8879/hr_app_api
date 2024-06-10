@@ -63,26 +63,6 @@ public class UserEntities {
     private boolean employeApproved = false;
 
     @JsonIgnore
-    @Column(columnDefinition = "tinyint(1) default 0")
-    private Integer totalLeaveBalance;
-
-    @JsonIgnore
-    @Column(columnDefinition = "tinyint(1) default 0")
-    private Integer totalWFHBalance;
-
-    // @JsonIgnore
-    // @Column(columnDefinition = "tinyint(1) default 0")
-    // private Integer totalLeaveApproved;
-
-    // @JsonIgnore
-    // @Column(columnDefinition = "tinyint(1) default 0")
-    // private Integer totalLeavePending;
-
-    // @JsonIgnore
-    // @Column(columnDefinition = "tinyint(1) default 0")
-    // private Integer totalLeaveCancelled;
-
-    @JsonIgnore
     @Column(nullable = true)
     private String accountSuspendReason;
 
@@ -93,20 +73,18 @@ public class UserEntities {
     @JsonIgnore
     private UUID createdBy;
 
+    private Integer totalPaidLeave= 0;
+
+    private Integer totalSickLeave = 0;
+
+    private Integer totalCasualLeave = 0;
+
+    private Integer totalWorkFromHome = 0;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "company_id")
     private CompanyEntities company;
-
-    // @JsonIgnore
-    // @ManyToMany
-    // @JoinTable(name = "user_team", joinColumns = @JoinColumn(name = "user_id"),
-    // inverseJoinColumns = @JoinColumn(name = "team_id"))
-    // private List<TeamsEntities> teams = new ArrayList<>();
-
-    // @JsonIgnore
-    // @OneToMany(mappedBy = "user")
-    // private List<LeaveAcitivityEntities> userLeaves = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany

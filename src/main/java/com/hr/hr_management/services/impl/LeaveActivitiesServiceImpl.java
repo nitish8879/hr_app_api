@@ -14,6 +14,7 @@ import com.hr.hr_management.repo.LeaveActivityRepo;
 import com.hr.hr_management.repo.UserRepo;
 import com.hr.hr_management.services.LeaveActivitiesService;
 import com.hr.hr_management.utils.enums.LeaveStatus;
+import com.hr.hr_management.utils.enums.LeaveType;
 import com.hr.hr_management.utils.enums.UserRoleType;
 import com.hr.hr_management.utils.models.AppResponse;
 
@@ -36,7 +37,6 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         validationUserService.isUserValid(req.getApprovalTo(), req.getCompanyID());
         AppResponse response = new AppResponse();
         var user = userRepo.findById(req.getUserID());
-
         LeaveAcitivityEntities data = new LeaveAcitivityEntities(
                 LeaveStatus.PENDING,
                 req.getFromdate(),
@@ -49,11 +49,15 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         var savedData = leaveRepo.save(data);
         response.setStatus(true);
         response.setData(savedData);
-
         var userLeaves = user.get().getUserLeaves();
         userLeaves.add(savedData);
         user.get().setUserLeaves(userLeaves);
         userRepo.save(user.get());
+        if (req.getLeaveType() == LeaveType.WFH) {
+            user.get().setTotalWorkFromHome(user.get().getTotalWorkFromHome() - 1);
+        } else if (req.getLeaveType() == LeaveType.PAID_LEAVE) {
+            user.get().setp(user.get().getTotalWorkFromHome() - 1);
+        }
         return response;
     }
 
@@ -91,12 +95,14 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         } else {
             var userExit = userRepo.findById(userID);
             var map = new HashMap<>();
-            map.put("totalLeavebalance", userExit.get().getTotalLeaveBalance());
-            map.put("totalWFHbalance", userExit.get().getTotalWFHBalance());
+            map.put("paidLeaveBalance", userExit.get().getTotalPaidLeave());
+            map.put("totalWFHbalance", userExit.get().getTotalWorkFromHome());
+            map.put("sickLeaveBalance", userExit.get().getTotalSickLeave());
+            map.put("casualLeaveBalance", userExit.get().getTotalCasualLeave());
             map.put("data", userExit.get().getUserLeaves());
             response.setData(map);
+            response.setStatus(true);
         }
-        response.setStatus(true);
         return response;
     }
 }

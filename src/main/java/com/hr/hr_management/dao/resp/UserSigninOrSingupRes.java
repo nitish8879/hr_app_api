@@ -24,14 +24,6 @@ public class UserSigninOrSingupRes {
 
     private String roleType;
 
-    private Integer totalLeaveBalance;
-
-    private Integer totalLeaveApproved;
-
-    private Integer totalLeavePending;
-
-    private Integer totalLeaveCancelled;
-
     private String companyName;
 
     private List<String> wrokingDays;

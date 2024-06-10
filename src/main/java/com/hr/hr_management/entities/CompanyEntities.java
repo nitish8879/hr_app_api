@@ -26,13 +26,25 @@ public class CompanyEntities {
     public CompanyEntities() {
     }
 
-    public CompanyEntities(String companyName, UserEntities admin, Time inTime, Time outTime,
-            List<String> workingDays) {
+    public CompanyEntities(
+            String companyName,
+            UserEntities admin,
+            Time inTime,
+            Time outTime,
+            List<String> workingDays,
+            Integer perMonthPL,
+            Integer perMonthSL,
+            Integer perMonthCL,
+            Integer perMonthWFH) {
         this.companyName = companyName;
         this.admin = admin;
         this.inTime = inTime;
         this.outTime = outTime;
         this.workingDays = workingDays;
+        this.perMonthPL = perMonthPL;
+        this.perMonthSL = perMonthSL;
+        this.perMonthCL = perMonthCL;
+        this.perMonthWFH = perMonthWFH;
     }
 
     @Id
@@ -42,6 +54,14 @@ public class CompanyEntities {
 
     @Column(nullable = false)
     private String companyName;
+
+    private Integer perMonthPL;
+
+    private Integer perMonthSL;
+
+    private Integer perMonthCL;
+    
+    private Integer perMonthWFH;
 
     @Column(nullable = false)
     private Time inTime;

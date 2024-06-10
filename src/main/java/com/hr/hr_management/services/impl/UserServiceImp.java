@@ -61,8 +61,6 @@ public class UserServiceImp implements UserService {
             userResp.setCreatedAt(userData.get().getCreatedAt());
             userResp.setRoleType(userData.get().getRoleType().name());
 
-            userResp.setTotalLeaveBalance(userData.get().getTotalLeaveBalance());
-
             userResp.setCompanyName(userData.get().getCompany().getCompanyName());
             userResp.setWrokingDays(userData.get().getCompany().getWorkingDays());
             userResp.setInTime(userData.get().getCompany().getInTime());
@@ -106,7 +104,11 @@ public class UserServiceImp implements UserService {
                             savedUserEntities,
                             req.getInTime(),
                             req.getOutTime(),
-                            req.getWrokingDays());
+                            req.getWrokingDays(),
+                            req.getPerMonthPL(),
+                            req.getPerMonthSL(),
+                            req.getPerMonthCL(),
+                            req.getPerMonthWFH());
                     var savedCompanyUserEntities = companyRepo.save(newCompany);
                     savedUserEntities.setCompany(savedCompanyUserEntities);
                     var savedUserEntities2 = userRepo.save(savedUserEntities);
