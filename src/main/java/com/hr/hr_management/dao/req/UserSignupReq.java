@@ -44,11 +44,9 @@ public class UserSignupReq {
     @NotNull(message = "Per Month PAID Leave can't be empty")
     private Integer perMonthPL;
 
-    @NotNull(message = "Per Month Sick Leave can't be empty")
-    private Integer perMonthSL;
+    @NotNull(message = "Per Month Casual And Sick Leave can't be empty")
+    private Integer perMonthSLCL;
 
-    @NotNull(message = "Per Month Casual Leave can't be empty")
-    private Integer perMonthCL;
 
     @NotNull(message = "Per Month Work From Home can't be empty")
     private Integer perMonthWFH;

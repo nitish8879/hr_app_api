@@ -19,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
@@ -73,11 +72,9 @@ public class UserEntities {
     @JsonIgnore
     private UUID createdBy;
 
-    private Integer totalPaidLeave= 0;
+    private Integer totalPaidLeave = 0;
 
-    private Integer totalSickLeave = 0;
-
-    private Integer totalCasualLeave = 0;
+    private Integer totalCasualAndSickLeave = 0;
 
     private Integer totalWorkFromHome = 0;
 

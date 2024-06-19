@@ -106,8 +106,7 @@ public class UserServiceImp implements UserService {
                             req.getOutTime(),
                             req.getWrokingDays(),
                             req.getPerMonthPL(),
-                            req.getPerMonthSL(),
-                            req.getPerMonthCL(),
+                            req.getPerMonthSLCL(),
                             req.getPerMonthWFH());
                     var savedCompanyUserEntities = companyRepo.save(newCompany);
                     savedUserEntities.setCompany(savedCompanyUserEntities);

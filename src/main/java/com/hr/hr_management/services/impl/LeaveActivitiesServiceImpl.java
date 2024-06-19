@@ -55,10 +55,8 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             user.get().setTotalWorkFromHome(user.get().getTotalWorkFromHome() - 1);
         } else if (req.getLeaveType() == LeaveType.PAID_LEAVE) {
             user.get().setTotalPaidLeave(user.get().getTotalPaidLeave() - 1);
-        } else if (req.getLeaveType() == LeaveType.CASUAL_LEAVE) {
-            user.get().setTotalCasualLeave(user.get().getTotalCasualLeave() - 1);
-        } else if (req.getLeaveType() == LeaveType.SICK_LEAVE) {
-            user.get().setTotalSickLeave(user.get().getTotalSickLeave() - 1);
+        } else if (req.getLeaveType() == LeaveType.CASUAL_LEAVE || req.getLeaveType() == LeaveType.SICK_LEAVE) {
+            user.get().setTotalCasualAndSickLeave(user.get().getTotalCasualAndSickLeave() - 1);
         }
         userRepo.save(user.get());
         response.setStatus(true);
@@ -103,8 +101,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             var map = new HashMap<>();
             map.put("paidLeaveBalance", userExit.get().getTotalPaidLeave());
             map.put("totalWFHbalance", userExit.get().getTotalWorkFromHome());
-            map.put("sickLeaveBalance", userExit.get().getTotalSickLeave());
-            map.put("casualLeaveBalance", userExit.get().getTotalCasualLeave());
+            map.put("casualAndSickLeaveBalance", userExit.get().getTotalCasualAndSickLeave());
             map.put("data", userExit.get().getUserLeaves());
             response.setData(map);
             response.setStatus(true);

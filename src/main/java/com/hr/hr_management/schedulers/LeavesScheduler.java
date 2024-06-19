@@ -1,24 +1,37 @@
 package com.hr.hr_management.schedulers;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.hr.hr_management.entities.UserEntities;
+import com.hr.hr_management.repo.CompanyRepo;
+import com.hr.hr_management.repo.UserRepo;
+
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Component
-// @Configuration
-// @EnableScheduling
 public class LeavesScheduler {
 
     @Value("${cron.expression}")
     private String cronExpression;
 
+    @Autowired
+    CompanyRepo companyRepo;
 
-    @Scheduled(cron = "#{@leavesScheduler.cronExpression}")
+    @Autowired
+    UserRepo userRepo;
+
+    @Scheduled(cron = "${cron.expression}")
     public void performTask() {
-        System.out.println("Heyy nitish");
+        for (var compnay : companyRepo.findAll()) {
+            for (var employee : compnay.getUsers()) {
+                employee.setTotalCasualAndSickLeave(employee.getTotalCasualAndSickLeave() + compnay.getPerMonthSLCL());
+                employee.setTotalPaidLeave(employee.getTotalPaidLeave() + compnay.getPerMonthPL());
+                employee.setTotalWorkFromHome(employee.getTotalWorkFromHome() + compnay.getPerMonthWFH());
+                userRepo.save(employee);
+            }
+        }
+        System.out.println("Employee Leaves Added Done");
     }
 }

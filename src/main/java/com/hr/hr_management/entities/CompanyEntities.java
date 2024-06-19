@@ -33,8 +33,7 @@ public class CompanyEntities {
             Time outTime,
             List<String> workingDays,
             Integer perMonthPL,
-            Integer perMonthSL,
-            Integer perMonthCL,
+            Integer perMonthSLCL,
             Integer perMonthWFH) {
         this.companyName = companyName;
         this.admin = admin;
@@ -42,8 +41,7 @@ public class CompanyEntities {
         this.outTime = outTime;
         this.workingDays = workingDays;
         this.perMonthPL = perMonthPL;
-        this.perMonthSL = perMonthSL;
-        this.perMonthCL = perMonthCL;
+        this.perMonthSLCL = perMonthSLCL;
         this.perMonthWFH = perMonthWFH;
     }
 
@@ -57,10 +55,8 @@ public class CompanyEntities {
 
     private Integer perMonthPL;
 
-    private Integer perMonthSL;
+    private Integer perMonthSLCL;
 
-    private Integer perMonthCL;
-    
     private Integer perMonthWFH;
 
     @Column(nullable = false)
