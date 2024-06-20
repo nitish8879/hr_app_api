@@ -96,6 +96,7 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         if ((roleType == UserRoleType.ADMIN || roleType == UserRoleType.SUPERADMIN || roleType == UserRoleType.MANAGER)
                 && !myLeave) {
             var company = companyRepo.findById(companyID);
+            response.setStatus(true);
             response.setData(company.get().getAllLeaves());
         } else {
             var userExit = userRepo.findById(userID);
@@ -105,8 +106,8 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             map.put("totalWFHbalance", userExit.get().getTotalWorkFromHome());
             map.put("casualAndSickLeaveBalance", userExit.get().getTotalCasualAndSickLeave());
             map.put("data", userExit.get().getUserLeaves());
-            response.setData(map);
             response.setStatus(true);
+            response.setData(map);
         }
         return response;
     }
