@@ -2,13 +2,11 @@ package com.hr.hr_management.schedulers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.hr.hr_management.entities.UserEntities;
 import com.hr.hr_management.repo.CompanyRepo;
 import com.hr.hr_management.repo.UserRepo;
-
-import org.springframework.scheduling.annotation.Scheduled;
 
 @Component
 public class LeavesScheduler {

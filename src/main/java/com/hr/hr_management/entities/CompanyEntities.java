@@ -11,6 +11,7 @@ import com.hr.hr_management.utils.enums.WrokingDays;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -74,7 +75,7 @@ public class CompanyEntities {
     private UserEntities admin;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company" ,fetch = FetchType.EAGER)
     private List<UserEntities> users = new ArrayList<>();
 
     @JsonIgnore

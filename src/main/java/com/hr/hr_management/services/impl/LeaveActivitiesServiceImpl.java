@@ -51,13 +51,6 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
         var userLeaves = user.get().getUserLeaves();
         userLeaves.add(savedData);
         user.get().setUserLeaves(userLeaves);
-        if (req.getLeaveType() == LeaveType.WFH) {
-            user.get().setTotalWorkFromHome(user.get().getTotalWorkFromHome() - 1);
-        } else if (req.getLeaveType() == LeaveType.PAID_LEAVE) {
-            user.get().setTotalPaidLeave(user.get().getTotalPaidLeave() - 1);
-        } else if (req.getLeaveType() == LeaveType.CASUAL_LEAVE || req.getLeaveType() == LeaveType.SICK_LEAVE) {
-            user.get().setTotalCasualAndSickLeave(user.get().getTotalCasualAndSickLeave() - 1);
-        }
         userRepo.save(user.get());
         response.setStatus(true);
         response.setData(savedData);
@@ -77,11 +70,20 @@ public class LeaveActivitiesServiceImpl implements LeaveActivitiesService {
             response.setStatus(false);
             response.setErrorMsg("You are not the right person to approve this.");
         } else {
+            leaveData.get().getUser();
+            if (leaveData.get().getLeaveType() == LeaveType.WFH) {
+                leaveData.get().getUser().setTotalWorkFromHome(leaveData.get().getUser().getTotalWorkFromHome() - 1);
+            } else if (leaveData.get().getLeaveType() == LeaveType.PAID_LEAVE) {
+                leaveData.get().getUser().setTotalPaidLeave(leaveData.get().getUser().getTotalPaidLeave() - 1);
+            } else if (leaveData.get().getLeaveType() == LeaveType.CASUAL_AND_SICK_LEAVE) {
+                leaveData.get().getUser().setTotalCasualAndSickLeave(leaveData.get().getUser().getTotalCasualAndSickLeave() - 1);
+            }
             leaveData.get().setLeaveStatus(req.getLeaveStatus());
             leaveData.get().setRejectedReason(req.getRejectReason());
             var saveData = leaveRepo.save(leaveData.get());
             response.setStatus(true);
             response.setData(saveData);
+            userRepo.save(leaveData.get().getUser());
         }
 
         return response;
